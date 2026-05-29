@@ -19,6 +19,11 @@
       "name": "gwt",
       "source": "./gwt",
       "description": "Given-When-Then Android test scaffolding skill."
+    },
+    {
+      "name": "cleanup-merged-branch",
+      "source": "./cleanup-merged-branch",
+      "description": "End-of-branch cleanup: exits the worktree, syncs main, and deletes the local branch only if it is merged into main."
     }
   ]
 }
