@@ -1,0 +1,6 @@
+{
+  "name": "dual-loop-flow",
+  "description": "Plan multi-PR features with vertical-slice + double-loop (outside-in) TDD; OPSX/Jira/Figma optional with graceful degradation.",
+  "version": "0.1.0",
+  "author": { "name": "Andy Lai", "email": "andy.lai@viewsonic.com" }
+}

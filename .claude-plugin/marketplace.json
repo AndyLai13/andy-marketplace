@@ -1,0 +1,24 @@
+{
+  "name": "andy-marketplace",
+  "owner": {
+    "name": "Andy Lai",
+    "email": "andy.lai@viewsonic.com"
+  },
+  "plugins": [
+    {
+      "name": "android-testing",
+      "source": "./android-testing",
+      "description": "Android :app module testing conventions (MockK, Turbine, Robolectric, JUnit 4) for edu-vbos-finch."
+    },
+    {
+      "name": "dual-loop-flow",
+      "source": "./dual-loop-flow",
+      "description": "Plan multi-PR features with vertical-slice + double-loop (outside-in) TDD; OPSX/Jira/Figma optional with graceful degradation."
+    },
+    {
+      "name": "gwt",
+      "source": "./gwt",
+      "description": "Given-When-Then Android test scaffolding skill."
+    }
+  ]
+}

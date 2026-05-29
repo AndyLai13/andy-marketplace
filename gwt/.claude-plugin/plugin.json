@@ -1,0 +1,6 @@
+{
+  "name": "gwt",
+  "description": "Given-When-Then Android test scaffolding skill.",
+  "version": "0.1.0",
+  "author": { "name": "Andy Lai", "email": "andy.lai@viewsonic.com" }
+}

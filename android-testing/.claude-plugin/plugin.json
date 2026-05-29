@@ -1,0 +1,6 @@
+{
+  "name": "android-testing",
+  "description": "Android :app module testing conventions (MockK, Turbine, Robolectric, JUnit 4) for edu-vbos-finch.",
+  "version": "0.1.0",
+  "author": { "name": "Andy Lai", "email": "andy.lai@viewsonic.com" }
+}
