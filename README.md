@@ -1,37 +1,242 @@
 # andy-marketplace
 
-Andy Lai 的 Claude Code plugin marketplace。
+Andy Lai's personal [Claude Code](https://claude.com/claude-code) plugin marketplace.
 
-## 安裝
+Opinionated skills for **Outside-In TDD** (a.k.a. **Double-Loop TDD** / **BDD + TDD**) workflows, Android test conventions, AC rewriting, and branch hygiene.
+
+> 中文版說明在文件下半部 → [跳到中文](#中文版)
+
+---
+
+## English
+
+### What's in here
+
+One plugin (`toolbox`) bundling four skills. The headline skill is `dual-loop-flow` — a structured workflow for planning multi-PR features using **vertical slicing + Double-Loop TDD**.
+
+```bash
+# Add this marketplace (local path)
+/plugin marketplace add ~/andy-marketplace
+
+# Or after pushing to GitHub
+/plugin marketplace add https://github.com/AndyLai13/andy-marketplace
+
+# Install the toolbox plugin
+/plugin install toolbox@andy-marketplace
+```
+
+After install, every skill is namespaced under `toolbox:`.
+
+| Skill | Purpose | Invoke |
+|---|---|---|
+| [`dual-loop-flow`](#dual-loop-flow--double-loop-tdd--outside-in-tdd-planner) | Plan multi-PR features with **Outside-In TDD** (vertical slice + Foundation-freeze) | `/toolbox:dual-loop-flow` |
+| [`gwt`](#gwt--given-when-then-ac-rewriter) | Rewrite/review Acceptance Criteria into **BDD-style Given-When-Then** | `/toolbox:gwt` |
+| [`android-testing`](#android-testing) | Android `:app` testing conventions (MockK / Turbine / Robolectric / JUnit 4) | `/toolbox:android-testing` |
+| [`cleanup-merged-branch`](#cleanup-merged-branch) | End-of-branch cleanup: sync main, verify merge (incl. squash via `gh`), delete local | `/toolbox:cleanup-merged-branch` |
+
+`dual-loop-flow` references `/toolbox:gwt` in its AC-prep step — both ship in the same plugin, so installing `toolbox` gives you the full chain.
+
+---
+
+### `dual-loop-flow` — Double-Loop TDD / Outside-In TDD planner
+
+The core methodology skill. Plans a multi-PR feature using **vertical slicing by AC group** and **Double-Loop TDD** (a.k.a. **Outside-In TDD**, the **BDD + TDD** double-loop):
+
+- **Outer loop (BDD / acceptance)** — failing acceptance test written from the AC drives the slice. Lives in the outer ring of the [Double-Loop TDD diagram](https://coding-is-like-cooking.info/2013/04/outside-in-development-with-double-loop-tdd/): *Write a failing acceptance test → make it pass*.
+- **Inner loop (TDD / unit)** — classic red/green/refactor at the unit level drives the implementation needed to turn the outer test green.
+
+> "Outside-In" = start from the outermost user-facing assertion (AC → acceptance test), then push inward through unit tests. The outer test stays red until the slice is functionally complete; inner tests cycle red→green→refactor many times inside it. This is the **double loop**.
+
+**What the skill produces**
+
+For a feature with N AC groups, it plans:
+
+1. **PR #1 — Foundation PR (β-style)**: writes **complete Given/When/Then acceptance test bodies** for every AC, all marked `@Ignore("WIP: ...")`. This freezes the contract on Day 1.
+2. **PR #2…N — Slice PRs (one per AC group)**: each PR un-ignores its outer test, drives the implementation inward via inner-loop TDD (Domain → ViewModel → UI as needed), and lands self-contained.
+3. **Final PR**: polish, deferred design TBDs, flag flip.
+
+Because outer tests are **locked at Foundation**, slice PRs can land in any order and `main` stays green throughout — that's the Foundation-freeze guarantee.
+
+**Why the rules are strict (no override)**
+
+The skill refuses horizontal slicing, α-style skeleton outer tests, and IA decisions inferred from PRD prose. Each rule is structural — break it and the Double-Loop / Foundation-freeze model collapses (see the skill body for the long-form reasoning).
+
+**Phase 8 manual-test gate**: every slice PR finalizes a manual test case (written to `test_case/<slice>.md`) before the slice is considered done — bridges the gap until UI/E2E automation catches up.
+
+**Integration modes** — OPSX / Figma / Jira are used when available, gracefully degraded when absent. The skill never blocks on an external tool; it switches modes and keeps planning.
+
+**Invoke**
+
+```
+/toolbox:dual-loop-flow <feature-name>
+/toolbox:dual-loop-flow <parent-jira-ticket>
+```
+
+**When to use**: feature needs 5+ PRs, AC are frozen (or near-frozen), trunk-based dev with a feature flag.
+**When NOT to use**: trivial single-PR change, AC not yet written (run `/toolbox:gwt` first), feature fits in 1–2 PRs.
+
+---
+
+### `gwt` — Given-When-Then AC rewriter
+
+Rewrites or reviews acceptance criteria into concrete **BDD-style Given/When/Then** form — the prerequisite shape for the outer-loop acceptance tests in **Outside-In TDD**.
+
+Output is written to `test_case/*.md` locally (no Jira write-back). Pairs directly with `dual-loop-flow`: tighten AC with `gwt` first, then plan PRs with `dual-loop-flow`.
+
+```
+/toolbox:gwt
+```
+
+---
+
+### `android-testing`
+
+Encodes the actual testing conventions of the project this skill was extracted from (`edu-vbos-finch :app` module):
+
+- **MockK** for mocking, **Turbine** for `Flow`/`StateFlow` assertions, **Robolectric** for Android-dependent unit tests, **JUnit 4**.
+- Patterns for ViewModel tests, Repository tests, WorkManager tests, and instrumented UI tests.
+- Points at canonical in-repo examples rather than re-inventing patterns.
+
+```
+/toolbox:android-testing
+```
+
+---
+
+### `cleanup-merged-branch`
+
+End-of-branch hygiene. Typical triggers: *"PR was merged, clean up"*, *"we're done with this branch"*, *"switch back to main"*.
+
+- Detects **standard merges** (via `git`) **and** **squash/rebase merges** (via `gh pr` when available).
+- Aborts cleanly if the branch is **not** actually merged — leaves the worktree and branch untouched. No destructive surprises.
+
+```
+/toolbox:cleanup-merged-branch
+```
+
+---
+
+### Updating
+
+After editing skill files locally:
+
+```
+/plugin marketplace update
+```
+
+---
+
+## 中文版
+
+Andy Lai 的 Claude Code plugin marketplace。重點是 **Outside-In TDD**（又稱 **Double-Loop TDD** / **BDD + TDD**）流程、Android 測試慣例、AC 改寫、branch 收尾。
+
+### 安裝
 
 ```bash
 # 本機路徑
 /plugin marketplace add ~/andy-marketplace
 
 # 或之後 push 到 GitHub 後
-# /plugin marketplace add https://github.com/<user>/andy-marketplace
-```
+/plugin marketplace add https://github.com/AndyLai13/andy-marketplace
 
-## Plugin：`toolbox`
-
-整包一個 plugin，內含 4 個 skill：
-
-```
+# 裝 toolbox plugin
 /plugin install toolbox@andy-marketplace
 ```
 
-| Skill | 用途 | 安裝後叫用 |
+裝完所有 skill 都在 `toolbox:` namespace 下。
+
+| Skill | 用途 | 叫用 |
 |---|---|---|
-| `android-testing` | Android `:app` 測試慣例（MockK / Turbine / Robolectric / JUnit 4） | `/toolbox:android-testing` |
-| `gwt` | 改寫 / 檢查 Acceptance Criteria 的 Given-When-Then 結構與具體度 | `/toolbox:gwt` |
-| `dual-loop-flow` | 多 PR feature 縱切 + 雙循環 (outside-in) TDD 規劃 | `/toolbox:dual-loop-flow` |
-| `cleanup-merged-branch` | feature branch 收尾：同步 main、確認已 merge 才刪 local branch | `/toolbox:cleanup-merged-branch` |
+| [`dual-loop-flow`](#dual-loop-flow--雙循環-tdd--outside-in-tdd-規劃器) | 多 PR feature 縱切 + **Outside-In TDD** 規劃（Foundation-freeze 模型） | `/toolbox:dual-loop-flow` |
+| [`gwt`](#gwt--given-when-then-改寫) | 把 AC 改寫/檢查成 **BDD 風格** Given-When-Then | `/toolbox:gwt` |
+| [`android-testing`](#android-testing-1) | Android `:app` 測試慣例（MockK / Turbine / Robolectric / JUnit 4） | `/toolbox:android-testing` |
+| [`cleanup-merged-branch`](#cleanup-merged-branch-1) | feature branch 收尾：同步 main、確認已 merge（含 squash） 才刪 local | `/toolbox:cleanup-merged-branch` |
 
-> `dual-loop-flow` 的 AC 前置步驟會引用 `/toolbox:gwt` —— 兩者同包，裝 `toolbox` 即同時具備。
+`dual-loop-flow` 在 AC 前置步驟會引用 `/toolbox:gwt` —— 兩者同包，裝 `toolbox` 即同時具備。
 
-## 更新
+---
 
-修改本機檔案後在 Claude Code：
+### `dual-loop-flow` — 雙循環 TDD / Outside-In TDD 規劃器
+
+核心方法論 skill。把一個多 PR feature **縱切（依 AC group）** 並用 **Double-Loop TDD**（亦即 **Outside-In TDD**、**BDD + TDD** 雙循環）來規劃：
+
+- **外圈 (BDD / acceptance)**：先寫一條會失敗的 acceptance test 把整個 slice 框起來。
+- **內圈 (TDD / unit)**：在外圈紅燈內，用傳統 red/green/refactor 一輪一輪推進實作，直到外圈轉綠。
+
+> "Outside-In" 的精神是 **從最外層的使用者行為斷言（AC → acceptance test）開始，往內推單元測試**。外圈在整個 slice 完成前持續紅燈；內圈在外圈紅燈內反覆 red→green→refactor —— 這就是 **雙循環**。
+
+**Skill 會產出什麼**
+
+對 N 個 AC group 的 feature，會規劃：
+
+1. **PR #1 — Foundation PR（β 風格）**：把所有 AC 對應的 **Given/When/Then 斷言整段寫完**，全部標 `@Ignore("WIP: ...")`。Day 1 就把契約鎖住。
+2. **PR #2…N — Slice PR（一個 AC group 一個）**：每個 PR 只 un-ignore 自己那條外圈測試，再用內圈 TDD（Domain → ViewModel → UI）把它推到綠燈，獨立合進 main。
+3. **Final PR**：收尾、處理 design TBD、開 flag。
+
+因為外圈測試在 **Foundation 就鎖死**，slice PR 可以**任意順序合進 main**，且 main 一路保持綠燈 —— 這就是 Foundation-freeze 的保證。
+
+**為什麼規則嚴格（不能 override）**
+
+Skill 會拒絕：橫切、α 風格骨架外圈測試、從 PRD 文字推 IA 決策。每條規則都是結構性的 —— 一旦破壞，Double-Loop / Foundation-freeze 模型直接崩掉（理由很長，見 skill 內文）。
+
+**Phase 8 手動測試 gate**：每個 slice PR 完成前要把該 slice 的手動測試案例 finalize 到 `test_case/<slice>.md`，補上 UI/E2E 自動化還沒到位的空檔。
+
+**Integration mode**：OPSX / Figma / Jira 有就用、沒有就降級，**永遠不會卡死**。
+
+**叫用**
+
+```
+/toolbox:dual-loop-flow <feature-name>
+/toolbox:dual-loop-flow <parent-jira-ticket>
+```
+
+**適用時機**：feature 拆得出 5+ PR、AC 已 freeze（或接近 freeze）、trunk-based + feature flag。
+**不適用時機**：單 PR 小改、AC 還沒寫好（先跑 `/toolbox:gwt`）、1–2 PR 就做完。
+
+---
+
+### `gwt` — Given-When-Then 改寫
+
+把 AC 改寫/檢查成具體的 **BDD 風格 Given/When/Then** —— 這是 **Outside-In TDD** 外圈 acceptance test 的前置形式。
+
+輸出到本機 `test_case/*.md`（不寫回 Jira）。和 `dual-loop-flow` 直接搭配：先用 `gwt` 把 AC 收緊，再用 `dual-loop-flow` 規劃 PR。
+
+```
+/toolbox:gwt
+```
+
+---
+
+### `android-testing`
+
+把這 skill 抽出來那個專案（`edu-vbos-finch :app` module）的測試慣例固化下來：
+
+- **MockK** mock、**Turbine** 斷言 `Flow`/`StateFlow`、**Robolectric** 處理 Android 依賴的 unit test、**JUnit 4**。
+- ViewModel、Repository、WorkManager、instrumented UI test 的模板。
+- 直接指向 repo 內既有的範例檔，不重造輪子。
+
+```
+/toolbox:android-testing
+```
+
+---
+
+### `cleanup-merged-branch`
+
+Feature branch 收尾。典型 trigger：「PR merge 了，清一下」、「這 branch 做完了」、「回 main」。
+
+- 同時辨識 **標準 merge**（用 `git`）和 **squash / rebase merge**（有 `gh` 時用 `gh pr`）。
+- **沒真的 merge 就 abort**，worktree 和 branch 完全不動，不會誤刪。
+
+```
+/toolbox:cleanup-merged-branch
+```
+
+---
+
+### 更新
+
+修改本機 skill 檔案後：
 
 ```
 /plugin marketplace update
