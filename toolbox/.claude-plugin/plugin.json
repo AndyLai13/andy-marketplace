@@ -2,5 +2,5 @@
   "name": "toolbox",
   "description": "Andy Lai 的個人工具箱：Android :app 測試慣例 (android-testing)、AC → Given-When-Then 改寫 (gwt)、multi-PR 縱切 + 雙循環 TDD 規劃 (dual-loop-flow)、feature branch 收尾清理 (cleanup-merged-branch)。",
   "version": "0.1.0",
-  "author": { "name": "Andy Lai", "email": "andy.lai@viewsonic.com" }
+  "author": { "name": "AndyLai13", "email": "badboyandy13@gmail.com" }
 }
