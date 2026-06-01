@@ -1,6 +1,6 @@
 ---
 name: dual-loop-flow
-description: Plan multi-PR feature with vertical-slice + double-loop TDD (a.k.a. outside-in TDD) workflow. Use when feature needs 5+ PRs, AC are frozen, trunk-based env. OPSX / Figma / Jira are used when available and gracefully degraded (never blocked) when absent. Trigger via `/dual-loop-flow <feature-name>` or `/dual-loop-flow <parent-ticket>`.
+description: Plan multi-PR feature with vertical-slice + double-loop TDD (a.k.a. outside-in TDD) workflow. Use when feature needs 5+ PRs, AC are frozen, trunk-based env. OPSX / Figma / Jira are used when available and gracefully degraded (never blocked) when absent. Trigger via `/toolbox:dual-loop-flow <feature-name>` or `/toolbox:dual-loop-flow <parent-ticket>`.
 ---
 
 # dual-loop-flow — Vertical Slice + Double-Loop TDD Workflow
@@ -12,12 +12,12 @@ Plans and structures a multi-PR feature using vertical slicing (by AC group) wit
 ✅ User wants to plan multi-PR feature (5+ PR)
 ✅ AC are written in Jira and PM-confirmed (frozen or near-frozen)
 ✅ Trunk-based development environment with feature flag mechanism
-✅ User invokes via `/dual-loop-flow` or asks "拆 multi-story feature" / "規劃 multi-PR" / similar
+✅ User invokes via `/toolbox:dual-loop-flow` or asks "拆 multi-story feature" / "規劃 multi-PR" / similar
 
 ## When NOT to use
 
 ❌ Trivial single-PR change
-❌ AC not yet finalized (use `/gwt` first)
+❌ AC not yet finalized (use `/toolbox:gwt` first)
 ❌ Feature can be done in 1-2 PRs
 ❌ Need horizontal slicing or skeleton-style PR #1 — those don't compose with this skill's Foundation-freeze model (see below)
 
@@ -206,13 +206,13 @@ Use `AskUserQuestion` (5 questions; skip / adapt any that a missing integration 
    - ⚠️ 此授權**僅限 style 層**。**IA 層一律 block 等你確認**（Rule 3 / Rule 4 Asset provision policy），不在此授權範圍。
    - 記錄答案；Phase 6 slice-entry gate 與 dev 期 placeholder 行為都依此判斷。
 
-If AC 未過 `/gwt`：instruct user to run `/gwt` first; do not proceed.
+If AC 未過 `/toolbox:gwt`：instruct user to run `/toolbox:gwt` first; do not proceed.
 
 ### Phase 1: AC integrity check
 
 Get the AC, by mode:
 - **Jira present**: `getJiraIssue` (markdown format, fields=`["summary", "customfield_12203"]`).
-- **Jira absent**: ask the user to paste the AC or point to a local AC file (e.g., output of `/gwt`); read that. Record the source path in the plan for traceability.
+- **Jira absent**: ask the user to paste the AC or point to a local AC file (e.g., output of `/toolbox:gwt`); read that. Record the source path in the plan for traceability.
 
 Compute outer-test count:
 - AC count: N
@@ -437,7 +437,7 @@ Collect returned keys into a per-Task map (Task N → VB-XXX).
 | Slice boundary by tech layer (domain / VM / UI) | Reject (Rule 1 violation); insist on AC-group cohesion |
 | User asks for α / γ style | Reject (Rule 2 violation); explain Foundation-freeze incompatibility |
 | Outer test mocks implementation | Refactor to state-based assertions |
-| AC not frozen | Stop; ask user to /gwt + PM confirm first |
+| AC not frozen | Stop; ask user to /toolbox:gwt + PM confirm first |
 | Figma fully missing | Warn; suggest at least confirm AC behavior before slicing |
 | IA Decision finalized from PRD text without Figma | Reject (Rule 3 violation); require Figma citation or `[Figma TBD]` + Final PR gate task |
 | User insists "PRD 字面寫了 X 入口" | Re-explain Rule 3: PRD text is structurally ambiguous on IA; Figma is the SoT for entry placement / container / form factor |
@@ -479,4 +479,4 @@ After Phase 8, summarize:
 - `/opsx:propose` — 先跑此產出 OpenSpec proposal/design/spec
 - `/opsx:apply` — Phase 6 之後實作各 Task
 - `/opsx:archive` — feature ship 後歸檔
-- `/gwt` — AC 寫成 Rule + violation scenarios（Phase 0 前置）
+- `/toolbox:gwt` — AC 寫成 Rule + violation scenarios（Phase 0 前置）

@@ -12,15 +12,22 @@ Andy Lai 的 Claude Code plugin marketplace。
 # /plugin marketplace add https://github.com/<user>/andy-marketplace
 ```
 
-## Plugins
+## Plugin：`toolbox`
 
-| Plugin | 用途 | 安裝 |
+整包一個 plugin，內含 4 個 skill：
+
+```
+/plugin install toolbox@andy-marketplace
+```
+
+| Skill | 用途 | 安裝後叫用 |
 |---|---|---|
-| `android-testing` | Android `:app` 測試慣例（MockK / Turbine / Robolectric / JUnit 4） | `/plugin install android-testing@andy-marketplace` |
-| `dual-loop-flow` | 多 PR feature 縱切 + 雙循環 (outside-in) TDD 規劃 | `/plugin install dual-loop-flow@andy-marketplace` |
-| `gwt` | Given-When-Then Android test scaffold | `/plugin install gwt@andy-marketplace` |
+| `android-testing` | Android `:app` 測試慣例（MockK / Turbine / Robolectric / JUnit 4） | `/toolbox:android-testing` |
+| `gwt` | 改寫 / 檢查 Acceptance Criteria 的 Given-When-Then 結構與具體度 | `/toolbox:gwt` |
+| `dual-loop-flow` | 多 PR feature 縱切 + 雙循環 (outside-in) TDD 規劃 | `/toolbox:dual-loop-flow` |
+| `cleanup-merged-branch` | feature branch 收尾：同步 main、確認已 merge 才刪 local branch | `/toolbox:cleanup-merged-branch` |
 
-裝完之後 skill 變成 namespaced，例如 `/dual-loop-flow:dual-loop-flow`。
+> `dual-loop-flow` 的 AC 前置步驟會引用 `/toolbox:gwt` —— 兩者同包，裝 `toolbox` 即同時具備。
 
 ## 更新
 

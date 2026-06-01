@@ -6,24 +6,9 @@
   },
   "plugins": [
     {
-      "name": "android-testing",
-      "source": "./android-testing",
-      "description": "Android :app module testing conventions (MockK, Turbine, Robolectric, JUnit 4) for edu-vbos-finch."
-    },
-    {
-      "name": "dual-loop-flow",
-      "source": "./dual-loop-flow",
-      "description": "Plan multi-PR features with vertical-slice + double-loop (outside-in) TDD; OPSX/Jira/Figma optional with graceful degradation."
-    },
-    {
-      "name": "gwt",
-      "source": "./gwt",
-      "description": "Given-When-Then Android test scaffolding skill."
-    },
-    {
-      "name": "cleanup-merged-branch",
-      "source": "./cleanup-merged-branch",
-      "description": "End-of-branch cleanup: exits the worktree, syncs main, and deletes the local branch only if it is merged into main."
+      "name": "toolbox",
+      "source": "./toolbox",
+      "description": "Andy Lai 的個人工具箱：android-testing / gwt / dual-loop-flow / cleanup-merged-branch 四個 skill。"
     }
   ]
 }

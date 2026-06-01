@@ -1,6 +1,0 @@
-{
-  "name": "cleanup-merged-branch",
-  "description": "End-of-branch cleanup: exits the worktree, syncs main, and deletes the local branch only if it is merged into main.",
-  "version": "0.1.0",
-  "author": { "name": "Andy Lai", "email": "andy.lai@viewsonic.com" }
-}
