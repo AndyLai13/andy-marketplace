@@ -359,10 +359,15 @@ Collect returned keys into a per-Task map (Task N → VB-XXX).
 
 - `openspec validate "<change-name>"` pass — **OPSX present only**; absent → skip
 - `grep "Jira.*TBD" tasks.md` returns nothing — **Jira present only**; absent → confirm the sub-task plan table is complete instead
+- **Manual-test gate（補手動測試檢查）** — 規劃全程驅動的自動化測試（outer / inner / View-binding 整合）涵蓋不到的 AC / surface，收尾必須回頭確認並補 **manual TestCase**。⚠️ 這些 manual TestCase 是**過渡性質**——它們代表「將來會以 **UI / E2E 方式轉成自動化測試**」的行為，**不是永久手動測試**。因此每條都要當成**未來 UI/E2E 自動化候選**來登記與追蹤。**清單優先 + 補問**：
+  1. **清單比對**：以 Phase 0 讀入的 `docs/testing-conventions.md` manual 元件清單為準，掃過所有 slice 規劃觸及的 surface / AC；命中清單上元件者 → 標記該 AC/surface 需補 manual TestCase。清單缺失（無 `testing-conventions.md`）→ **降級**，跳過比對、直接進補問（見 §Integration modes 精神：tool/資料缺席不 hard-stop）。
+  2. **補問使用者**：`AskUserQuestion` 確認清單未涵蓋的手動測試需求（硬體互動、跨裝置、感官/體感、第三方整合、目前 UI/E2E 自動化尚未到位而暫時手動的時序…）—「這個 feature 還有哪些部分需要手動測試、且未來應轉成 UI/E2E 自動化（清單未列）？」
+  3. **落地，不可只在 report 提一句**（同 Rule 3b 紀律：口頭提及 ≠ 有人會做）：任一命中或使用者新增的 manual 測試 → 寫進對應 slice 的 manual TestCase 清單（依 `testing-conventions.md` 的 TestCase folder 位置），並在 Final Task 補 `- [ ] 手動測試 <AC/surface>：<deliverable>（未來轉 UI/E2E 自動化）` checkbox。每條都明確標記為 **future UI/E2E automation candidate**，讓它日後能被撈出來轉自動化、而不是被遺忘成永久手動。若確認完全不需手動測試 → 明確記「手動測試：無」，不要留空白。
 - Report to user:
   - tasks.md path (OPSX `openspec/changes/...` or plan-doc `docs/plans/...`)
   - **Jira present**: list of N+2 sub-tasks created · **Jira absent**: pointer to the sub-task plan table
   - **Degradation manifest** — for every absent integration, list what was downgraded and everything turned `TBD` (e.g. "Figma off → 3 IA Decisions = [Figma TBD] + Final-PR gates; OPSX off → no spec-lint/archive; Jira off → sub-tasks in table, not created"). Empty manifest if all three present.
+  - **手動測試需求** — 列出需補的 manual TestCase（AC/surface + 對應 Final Task checkbox），每條註明為**未來 UI/E2E 自動化候選**；或「無」。若因無 `testing-conventions.md` 而只靠補問判斷，註明清單比對已降級
   - Friction points encountered (if any unexpected)
   - Next step: "ready to start PR #1 Foundation?"
   - Closing reminder (**OPSX present only**): feature ship（最後 Final PR merge + flag flip）後跑 `/opsx:archive` 歸檔此 change，別忘記
@@ -448,6 +453,8 @@ Collect returned keys into a per-Task map (Task N → VB-XXX).
 | Jira / Atlassian MCP 不可用 | Don't block；AC 改由使用者貼上 / 本地檔；Phase 7 在 tasks.md 出 sub-task 計畫表（不建 ticket）；backfill 填 `Jira: N/A` |
 | UI 被當成單一物、留到雙循環跑完才回頭補 | Reject (Rule 4 violation); 拆兩軌：互動 → slice 內 View-binding 整合測試；視覺 → slice 內 Element Inventory 驗收。Final PR 只收 genuine TBD |
 | Slice 只靠 VM-level outer green 就喊完成 | Not done (Rule 4 Slice DoD); 要求 binding 整合測試 green + 視覺對齊 Element Inventory 才算完 |
+| 規劃只談自動化測試、沒檢查 manual 元件 | Phase 8 manual-test gate：比對 `testing-conventions.md` manual 元件清單 + 補問使用者；命中者落地成 Final Task `- [ ]` checkbox 並標記為未來 UI/E2E 自動化候選（口頭提及不算），確認無才記「手動測試：無」|
+| manual TestCase 被當成永久手動測試 | 修正定位：它是過渡性質、未來會轉 UI/E2E 自動化；每條都標 future UI/E2E automation candidate，方便日後撈出轉自動化 |
 | 開發中缺 style 素材、使用者當下不在 | 若 Phase 0 Q5 有 standing 預先授權 → placeholder + Provisional 列 + Final backfill checkbox(`nodeId`)；否則 block 等使用者 |
 | 開發中缺 IA 素材 | Block；回 Phase 2 重做，絕不 placeholder（Rule 3 / Rule 4 Asset provision policy） |
 | Multi-story but unclear which Story you are | Stop; ask Phase 0 question 3 again |
@@ -468,6 +475,7 @@ After Phase 8, summarize:
 | 風格 | β / α / γ |
 | Flag flip | Single / Option A/B/C/D |
 | 跨 Story 依賴 | (列出) 或 — |
+| 手動測試 | (需補的 manual TestCase：AC/surface + Final Task checkbox，標記未來 UI/E2E 自動化候選) 或 — 無 |
 | 降級 manifest | (Figma/OPSX/Jira 缺席而降級或轉 TBD 的項目) 或 — 全部到位 |
 
 下一步：實作 PR #1 Foundation 嗎？
