@@ -30,7 +30,10 @@ trigger: /toolbox:gwt
 2. 先問：**「要全部改寫，還是只挑某幾條改？只做分類分析，還是要直接產出最終版？」**
 3. 套用 Step 0 → Step 1 → Step 2 → Step 3
 4. 回傳：改寫結果 + **具體度警示清單**（哪些 Given/When/Then 仍不夠具體、哪些 sub-case 缺漏）
-5. 不擅自填使用者沒提到的細節——不確定處標 `<待確認: ...>` 讓 user 補
+5. 定稿後**寫成本地 test case 檔**（Step 4）——**不回填 Jira**
+6. 不擅自填使用者沒提到的細節——不確定處標 `<待確認: ...>` 讓 user 補
+
+> **不碰 Jira write**：本 skill 只「讀」Jira（Step -1 抓 AC），**絕不寫回**。定稿一律落地成本地 Markdown TC 檔，要不要同步回 ticket 由 user 自己決定。
 
 ---
 
@@ -302,21 +305,40 @@ Scenario 2 (套用至首頁):
 
 ---
 
-## 寫回 Jira（optional）
+## Step 4 — 產出本地 test case 檔
 
-改寫定稿後若要直接寫回 Jira ticket，使用 `mcp__plugin_atlassian_atlassian__editJiraIssue`：
+改寫定稿後，**一律把結果落地成本地 Markdown TC 檔**（不回填 Jira）。
 
-**必帶欄位**：
-- `cloudId`：Atlassian site ID（透過 `getAccessibleAtlassianResources` 取得；viewsonic-vsi 為 `2ea8088c-133a-424f-9a3b-946e7ade9dad`）
-- `issueIdOrKey`：例如 `VB-19`
-- `contentFormat: "adf"` ⚠️ **必填**——不帶會誤觸 server 的 markdown→ADF 轉換並噴 `Failed to convert markdown to adf`
-- `fields`：ADF JSON 物件
-  - `description`：rich-text paragraph
-  - AC 欄位 customfield ID 因專案而異——先用 `getJiraIssue` 確認；finch (VB project) 為 `customfield_12203`
+**路徑 / 命名**：`test_case/<key-or-slug>.md`
+- 有 Jira key → 用 key：`test_case/VB-82.md`
+- 純文字輸入 → 用 kebab-case slug（取自需求標題）：`test_case/app-shortcut-toggle.md`
+- `test_case/` 目錄不存在就先建立；同名檔已存在先問 user 要覆蓋還是另存。
 
-**ADF 結構建議**：每條 AC 用 `heading` (level 3) + `codeBlock`，避免 inline format 走樣。
+**檔案內容結構**（沿用「輸出格式」樣板 + 來源標頭）：
 
-**權限**：本專案 `.claude/settings.json` 已 allow `editJiraIssue`，不需逐次手動授權。其他 Jira write 操作（comment / transition / create）仍需明示授權，避免誤觸。
+```markdown
+# <Jira key 或標題> — Acceptance Criteria (GWT)
+
+> 來源：<Jira key / Confluence URL / 對話 paste>
+> 產出：/toolbox:gwt
+
+## 分類
+- AC1：<類型>（理由：...）
+
+## 改寫
+### AC1
+<套用模板後的 Rule / GWT scenario>
+
+## 具體度警示
+- AC1 Given：<不夠具體之處 + 建議>
+
+## 待確認
+- <待確認: ...>
+```
+
+**注意**：
+- 本檔是 **AC / GWT 文件**，不是測試碼。測試方法命名、stack 細節仍走 `android-testing` skill。
+- 寫檔前先 echo 一次最終內容給 user 確認，再落地。
 
 ---
 
