@@ -369,7 +369,7 @@ Collect returned keys into a per-Task map (Task N → VB-XXX).
   - **Degradation manifest** — for every absent integration, list what was downgraded and everything turned `TBD` (e.g. "Figma off → 3 IA Decisions = [Figma TBD] + Final-PR gates; OPSX off → no spec-lint/archive; Jira off → sub-tasks in table, not created"). Empty manifest if all three present.
   - **手動測試需求** — 列出需補的 manual TestCase（AC/surface + 對應 Final Task checkbox），每條註明為**未來 UI/E2E 自動化候選**；或「無」。若因無 `testing-conventions.md` 而只靠補問判斷，註明清單比對已降級
   - Friction points encountered (if any unexpected)
-  - Next step: "ready to start PR #1 Foundation?"
+  - Next step: "ready to start PR #1 Foundation?" — 若實作走 git worktree，附帶提醒：先過 §Worktree env-file gate（symlink `local.properties` / `keystore.properties` / `MVBA_PlatForm.jks`，缺 keystore 會靜默簽成 debug key、上機更新才爆 `UPDATE_INCOMPATIBLE`）
   - Closing reminder (**OPSX present only**): feature ship（最後 Final PR merge + flag flip）後跑 `/opsx:archive` 歸檔此 change，別忘記
 
 ## Discipline / Constraints (enforce when running)
@@ -399,6 +399,22 @@ Collect returned keys into a per-Task map (Task N → VB-XXX).
 - IA-level asset missing → **block**, never placeholder; re-do Phase 2, do not guess from PRD.
 - Style-level asset missing + author unreachable → placeholder **only** under the Phase 0 Q5 standing authorization; otherwise block and ask.
 - Every placeholder = Element Inventory `Provisional` row + Final-PR `- [ ]` checkbox with `nodeId`. Bare code comments are not valid deferrals (Rule 3b).
+
+### Worktree env-file gate (signing — every PR implemented in a git worktree)
+
+If any Task (Foundation / slice / Final) is implemented in a **git worktree** (e.g. via `/toolbox:start-task` or superpowers:using-git-worktrees), **before the first build** symlink the gitignored env/signing files from the main checkout (symlink, not copy — copies drift):
+
+```bash
+MAIN=$(git worktree list --porcelain | head -1 | cut -d' ' -f2)   # main checkout path
+for f in local.properties keystore.properties MVBA_PlatForm.jks; do
+  [ -e "$MAIN/$f" ] && [ ! -e "$f" ] && ln -s "$MAIN/$f" "$f"
+done
+ls -lL local.properties keystore.properties MVBA_PlatForm.jks   # verify all three resolve
+```
+
+⚠️ Why this is a **gate**, not a tip: missing `local.properties` fails fast (SDK path error), but missing `keystore.properties` / `MVBA_PlatForm.jks` does **NOT fail the build** — Gradle silently falls back to the **debug key**. The APK builds and installs fresh, then explodes only on-device when updating an existing release-signed install: `INSTALL_FAILED_UPDATE_INCOMPATIBLE`. Silent failure + late detection = must check up front.
+
+(File list above is for edu-vbos-finch; for other projects, symlink whatever `signingConfigs` references plus `local.properties`.)
 
 ### Multi-story coordination
 
@@ -457,6 +473,7 @@ Collect returned keys into a per-Task map (Task N → VB-XXX).
 | manual TestCase 被當成永久手動測試 | 修正定位：它是過渡性質、未來會轉 UI/E2E 自動化；每條都標 future UI/E2E automation candidate，方便日後撈出轉自動化 |
 | 開發中缺 style 素材、使用者當下不在 | 若 Phase 0 Q5 有 standing 預先授權 → placeholder + Provisional 列 + Final backfill checkbox(`nodeId`)；否則 block 等使用者 |
 | 開發中缺 IA 素材 | Block；回 Phase 2 重做，絕不 placeholder（Rule 3 / Rule 4 Asset provision policy） |
+| 走 worktree 開發、缺 `keystore.properties` / `*.jks` | Build **不會失敗** — 靜默 fallback 簽 debug key，上機更新既有安裝才爆 `INSTALL_FAILED_UPDATE_INCOMPATIBLE`。進 worktree 第一個 build 前先 symlink 三檔並驗證（§Worktree env-file gate） |
 | Multi-story but unclear which Story you are | Stop; ask Phase 0 question 3 again |
 
 ## Output format
@@ -479,6 +496,7 @@ After Phase 8, summarize:
 | 降級 manifest | (Figma/OPSX/Jira 缺席而降級或轉 TBD 的項目) 或 — 全部到位 |
 
 下一步：實作 PR #1 Foundation 嗎？
+（走 git worktree 實作時：先 symlink local.properties / keystore.properties / MVBA_PlatForm.jks — §Worktree env-file gate）
 （OPSX on 時收尾提醒：所有 PR merge + flag flip ship 後，記得跑 `/opsx:archive` 歸檔此 change）
 ```
 

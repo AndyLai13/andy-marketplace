@@ -90,13 +90,17 @@ Invoke **superpowers:using-git-worktrees** to create the worktree on that branch
 
 **1d. Restore environment files not in git:**
 
-Many Android / iOS / desktop projects have local environment files (`local.properties`, `.env.local`, secrets) that are `.gitignore`'d. Worktrees start without them, so the first build fails on missing keys. Copy from the main worktree:
+Many Android / iOS / desktop projects have local environment / signing files (`local.properties`, `keystore.properties`, `*.jks`, `.env.local`, secrets) that are `.gitignore`'d. Worktrees start without them. Symlink from the main worktree (symlink, not copy — copies drift):
 
 ```bash
-for f in local.properties .env.local .env; do
-  [ -f "$MAIN_REPO/$f" ] && cp "$MAIN_REPO/$f" "$WT_PATH/$f"
+MAIN_REPO=$(git worktree list --porcelain | head -1 | cut -d' ' -f2)
+for f in local.properties keystore.properties MVBA_PlatForm.jks .env.local .env; do
+  [ -e "$MAIN_REPO/$f" ] && [ ! -e "$WT_PATH/$f" ] && ln -s "$MAIN_REPO/$f" "$WT_PATH/$f"
 done
+ls -lL "$WT_PATH"/local.properties "$WT_PATH"/keystore.properties "$WT_PATH"/MVBA_PlatForm.jks 2>/dev/null
 ```
+
+⚠️ Two failure modes — only one is loud: missing `local.properties` fails the first build fast (SDK path), but missing `keystore.properties` / `*.jks` does **NOT fail the build** — Gradle silently falls back to the **debug key**. The APK builds and installs fresh, then explodes on-device when updating an existing release-signed install: `INSTALL_FAILED_UPDATE_INCOMPATIBLE`. Verify the signing files resolve (`ls -lL`) **before** the first build, not after. (Keystore file list above is for edu-vbos-finch; other projects: whatever `signingConfigs` references.)
 
 **1e. Record context:**
 
