@@ -12,7 +12,7 @@ Opinionated skills for **Outside-In TDD** (a.k.a. **Double-Loop TDD** / **BDD + 
 
 ### What's in here
 
-One plugin (`toolbox`) bundling five skills. The headline skill is `dual-loop-flow` — a structured workflow for planning multi-PR features using **vertical slicing + Double-Loop TDD**.
+One plugin (`toolbox`) bundling six skills. The headline skill is `dual-loop-flow` — a structured workflow for planning multi-PR features using **vertical slicing + Double-Loop TDD**.
 
 ```bash
 # Add this marketplace (local path)
@@ -34,6 +34,7 @@ After install, every skill is namespaced under `toolbox:`.
 | [`android-testing`](#android-testing) | Android `:app` testing conventions (MockK / Turbine / Robolectric / JUnit 4) | `/toolbox:android-testing` |
 | [`cleanup-merged-branch`](#cleanup-merged-branch) | End-of-branch cleanup: sync main, verify merge (incl. squash via `gh`), delete local | `/toolbox:cleanup-merged-branch` |
 | `start-task` | Pre-PR convergence pipeline: worktree → `/review-pr` loop → spotless → commit tidy | `/toolbox:start-task` |
+| `roborazzi-figma` | Figma↔Android pixel-match loop: render → diff → fix via Roborazzi, then lock as CI golden | `/toolbox:roborazzi-figma` |
 
 `dual-loop-flow` references `/toolbox:gwt` in its AC-prep step — both ship in the same plugin, so installing `toolbox` gives you the full chain.
 
@@ -153,6 +154,7 @@ Andy Lai 的 Claude Code plugin marketplace。重點是 **Outside-In TDD**（又
 | [`android-testing`](#android-testing-1) | Android `:app` 測試慣例（MockK / Turbine / Robolectric / JUnit 4） | `/toolbox:android-testing` |
 | [`cleanup-merged-branch`](#cleanup-merged-branch-1) | feature branch 收尾：同步 main、確認已 merge（含 squash） 才刪 local | `/toolbox:cleanup-merged-branch` |
 | `start-task` | 開 PR 前收斂 pipeline：worktree → `/review-pr` 迴圈 → spotless → 整理 commit | `/toolbox:start-task` |
+| `roborazzi-figma` | Figma↔Android 像素比對迴圈：render → diff → fix（Roborazzi），收斂後鎖成 CI golden | `/toolbox:roborazzi-figma` |
 
 `dual-loop-flow` 在 AC 前置步驟會引用 `/toolbox:gwt` —— 兩者同包，裝 `toolbox` 即同時具備。
 
