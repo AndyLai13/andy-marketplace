@@ -7,9 +7,11 @@
 
 # Test Case 維護規範
 
-編號規則：`TC-XX` 在各產品 section 內遞增，**只新增不重編**；廢棄的 TC 在標題標註 `(Deprecated)`，不要刪行也不要回收編號（避免外部 ticket 引用斷裂）。
+編號規則：`TC-XX` 在各產品 section 內遞增；**現存編號不重編、不回收**（避免外部 ticket 引用斷裂）。**不再適用的測項直接移除**（不留 `(Deprecated)` placeholder、不留歷史說明）——留下的編號空缺屬正常。新增 TC 時複製檔末 `## _TEMPLATE` 區塊。
 
-新增 TC 時，複製檔末 `## _TEMPLATE` 區塊。
+> **維護紀律：本檔面向「現在的可維護性」，不是保存歷史。**
+> - 單一真實來源 = 每列 `測試方式` / `備註` 欄；**不另立會 drift 的彙總段**（自動化盤點 / 維持手動清單 / 「哪個檔覆蓋哪些 TC」對照）。整體覆蓋用 `grep '👁' <file>` 即時導出，不手維護。
+> - TC 只描述**現在的** Given / When / Then；不寫「原本…已改 / 行為定案（日期）/ 已修正」歷史註記（交給 git）。
 
 > **「測試方式」欄（驗證驅動，每列一個主狀態）** — 本文件主軸：以 **instrumented 真機測試** 把「原本要人工驗」的 sub-case 自動化；逐列照此欄行動。
 >
@@ -61,26 +63,6 @@
 ## 設計點（實作前須對齊）
 
 - <影響時機 / 接線 / 重構的決策，逐條列出>
-
-## 自動化盤點（<萃取 ticket>，<日期>）
-
-> 本文件主軸：以 instrumented 真機測試把「原本要人工驗」的 sub-case 自動化（`✅`）；純邏輯下沉 unit 當回歸防線（`unit:`）；視覺/感知或 instrument 成本 > 手動者維持 `👁`。
-
-**測試資產**
-
-| 層級 | 檔案 | 跑法 | 覆蓋（主軸 / 佐證）|
-|---|---|---|---|
-| **真機 instrumented**（主驗證驅動）| `<Feature>InstrumentedTest`（N case）| `:app:connectedDebugAndroidTest`（需裝置；CI 不跑）| <TC 清單> |
-| **unit / Robolectric**（回歸防線）| `<...>Test` | `:app:testDebugUnitTest`（快、免裝置）| <純函式 / 不變式 / 機制清單> |
-
-**維持手動的項目**（成本 > 手動價值 / 純視覺，已標 `👁` + 理由）
-
-- **對 Figma 視覺**：<TC 清單>
-- **真機畫面內容 / overlay 計時**：<TC 清單>
-- **真實系統觸發（機制已 unit 覆蓋）**：<TC 清單>
-- **instrument 成本高**：<TC 清單 + 理由>
-
-**已知量化 quirk（非 regression）**：<會影響 instrumented 穩定性的引擎行為 + 規避手法>
 
 ## _TEMPLATE
 > 新增 TC 時複製下方整段，把 `XX`、`<...>` 換掉。編號接續同 section 最後一個 TC +1。
