@@ -1,11 +1,18 @@
 <!--
-  Test Case 文件模板 — 由 /toolbox:test-funnel 產出。
-  格式萃取自 canonical 範例 edu-vbos-finch `test_case/freezer.md`（VB-579 / VB-882）。
+  Test Case 文件模板 — 由 /toolbox:test-funnel 產出。本檔是格式的單一本地來源；
+  填好的乾淨範例見同目錄 `canonical-example.md`。
   新增一份產品 test_case 檔時，從「# Test Case 維護規範」整段複製當表頭，
   再依 AC 數量複製檔末 `## TC-XX` 模板列。
 -->
 
 # Test Case 維護規範
+
+每個 TC 標題下方放一塊屬性區，便於篩選與追蹤：
+
+- **Priority** — `P0` / `P1` / `P2`
+- **Module** — TC 所屬功能模組（同一 section 內保持用詞一致）
+- **Status** — `Active` / `Pending Review` / `Deprecated`
+- **Phase** —（選填）功能分階段時標 `1` / `2` / ...
 
 編號規則：`TC-XX` 在各產品 section 內遞增；**現存編號不重編、不回收**（避免外部 ticket 引用斷裂）。**不再適用的測項直接移除**（不留 `(Deprecated)` placeholder、不留歷史說明）——留下的編號空缺屬正常。新增 TC 時複製檔末 `## _TEMPLATE` 區塊。
 
@@ -54,6 +61,11 @@
 
 ## TC-01 <測項標題>
 
+- **Priority:** P0 | P1 | P2
+- **Module:** <模組名稱>
+- **Phase:** <選填，1 / 2 / ...>
+- **Status:** Active
+
 | Sub | Given (前置條件) | When (操作步驟) | Then (預期結果) | 測試方式 | 備註 |
 |---|---|---|---|---|---|
 | 1 | <前置條件> | <操作步驟> | <預期結果> | <✅ Inst#method / 👁 Manual（理由）/ ⬜ pending> | <ACn；unit:Class#method（底層佐證）+ 其他註記> |
@@ -69,6 +81,11 @@
 
 ```
 ## TC-XX <測項標題>
+
+- **Priority:** P0 | P1 | P2
+- **Module:** <模組名稱>
+- **Phase:** <選填，1 / 2 / ...>
+- **Status:** Active
 
 | Sub | Given (前置條件) | When (操作步驟) | Then (預期結果) | 測試方式 | 備註 |
 |---|---|---|---|---|---|
