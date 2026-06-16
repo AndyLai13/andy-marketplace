@@ -1,19 +1,19 @@
 <!--
   乾淨 test-case 檔的 canonical 範例 — 由 /toolbox:test-funnel 參照（本地副本，不依賴外部 repo）。
   節錄自 edu-vbos-finch `test_case/timer.md`（VB-82 / 385 / 386）的真實列。
-  完整維護規範、符號定義與空白模板見同目錄 `testcase-template.md`（單一格式來源，本檔不重複）。
+  完整維護規範、符號定義與 `_TEMPLATE` 的單一真實來源 = 產出 repo 的 `test_case/CONVENTIONS.md`；檔案骨架範本見同目錄 `testcase-template.md`。本檔不重複。
 
   本範例示範的「乾淨」特徵（對應 SKILL.md〈維護紀律〉）：
   - 純現狀：無「自動化盤點」彙總段、無歷史註記（「原本…已改 / 行為定案（日期）」）
   - 廢棄項直接移除：VB-82 section 的 TC-10 / TC-12 因移除而空缺——不補 placeholder、不留 (Deprecated)
   - 單一真實來源 = 每列「測試方式 / 備註」欄；整體覆蓋用 `grep '👁' <file>` 即時導出
   - 檔頭宣告架構限制（哪些層搆得到、哪些只能 manual），決定全檔哪些列可標 ✅
-  - 真實檔末尾仍有 `## _TEMPLATE` 區塊（見 testcase-template.md），本節錄略
+  - 真實檔末尾仍有 `## _TEMPLATE` 區塊（定義見 `test_case/CONVENTIONS.md`），本節錄略
 -->
 
 # 節錄：VB-82 Timer SETTING
 
-> **⚠ 架構限制（檔頭宣告，決定哪些能 `✅`）**：Timer 的狀態化 UI 都是 FinchService host 的 WindowManager overlay、`FLAG_NOT_FOCUSABLE`，Espresso / UiAutomator by-id 搆不到真實 overlay → 真實 bar 只能黑箱座標 journey，這批主軸是 manual。**例外**：非 overlay 的一般 view（widget / SETTING card）可裝進 debug-only host Activity 用 `ActivityScenario` + Espresso 真機 by-id 驅動（見 TC-02 / TC-04）。
+> **⚠ 架構限制（檔頭宣告，決定哪些能 `✅`）**：Timer 的狀態化 UI 都是 FinchService host 的 WindowManager overlay、`FLAG_NOT_FOCUSABLE`——**instrumented 內的 UiAutomator（`UiDevice` + `By.res`/`By.desc`）可直接命中並驅動真實 overlay**（先前「搆不到」只對 shell `uiautomator dump` 成立，已於 2026-06-11 翻案）；Espresso 仍受 RootViewPicker 焦點限制搆不到 overlay root。canvas 自繪 / a11y-suppressed 元件（如 dial 中央鈕）仍只能 manual。**例外**：非 overlay 的一般 view（widget / SETTING card）可裝進 debug-only host Activity 用 `ActivityScenario` + Espresso 真機 by-id 驅動（見 TC-02 / TC-04）。
 
 ## TC-02 Dashboard 顯示 4 個 chip（flag=true）
 
