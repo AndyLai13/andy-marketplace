@@ -36,7 +36,8 @@ trigger: /toolbox:test-funnel
 |------|------|
 | `/toolbox:test-funnel VB-1234` | 讀 ticket 的 AC / PRD（走 gwt 的 Step -1 Jira 抓法，見下） |
 | `/toolbox:test-funnel "<直接貼 AC>"` | 直接吃貼進來的 AC 草稿 |
-| `/toolbox:test-funnel`（無參數） | 問使用者要 Jira key 還是貼 AC |
+| `/toolbox:test-funnel <檔案路徑>` | 讀檔 → 解析內容是否為 AC：是當 AC 草稿、不是則回報非 AC 不硬解析（見 Step 1） |
+| `/toolbox:test-funnel`（無參數） | 問使用者要 Jira key、貼 AC 還是給檔案 |
 | 既有 `test_case/<key>.md` 含 `👁 Manual` / `⏸ Deferred`，要重新挑戰 | 走**反向模式**（見下）：spike 驗前提 → 能翻就升 instrumented |
 
 ---
@@ -47,6 +48,10 @@ trigger: /toolbox:test-funnel
 
 - Jira key → 用 `getJiraIssue`（`fields: ["summary","description","customfield_12203","comment"]`、`responseContentFormat:"markdown"`、cloudId `2ea8088c-133a-424f-9a3b-946e7ade9dad`），把 `customfield_12203` 當 AC 草稿。遵守全域 CLAUDE.md 的 Atlassian 慣例（預設只讀不寫）。
 - 貼上的 AC → 直接用。
+- **檔案路徑**（`.md` / `.txt` / 匯出的 PRD / spec 等）→ 讀檔，先**解析內容是否為 AC**，再決定下一步：
+  - **判 AC 的特徵**（命中任一即視為 AC 草稿）：Given/When/Then 結構、`Rule:` / 驗收條件 / Acceptance Criteria 段落、條列式「系統應…/使用者可…」的可驗證敘述。
+  - **是 AC** → 當 AC 草稿用（進 Step 2）。檔內混雜非 AC 段落（背景、設計稿連結、實作筆記）就只抽出 AC 部分。
+  - **不是 AC**（純需求敘述 / 設計稿 / 會議記錄 / 程式碼）→ **回報「這不是 AC」並說明判斷依據，不硬解析**；請使用者確認、或改提供 AC 來源（Jira key / 貼 AC）。
 
 ### Step 2 — 整理 AC（條件式委派 gwt）
 
