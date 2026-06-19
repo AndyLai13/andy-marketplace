@@ -4,6 +4,9 @@
 > Doctrine 出處：[`test-strategy`](https://github.com/AndyLai13/andy-marketplace/tree/main/toolbox/skills/test-strategy) skill。
 > 當前實測數字在 [status.md](./status.md)。
 
+> **Stack 選擇**：`test-strategy` 有兩個 shape 實例。本模板渲染的是 **Shape A — BaaS / serverless**（邏輯在 PL/pgSQL RPC + RLS）。
+> 若本專案是 **Android `:app`**，改用 **Shape B**（unit-wide / instrumented-bowl / manual-cap，頂層是 manual 不是 E2E）——把下方各表換成 [`test-strategy` skill Shape B 段](https://github.com/AndyLai13/andy-marketplace/tree/main/toolbox/skills/test-strategy#shape-instance-b--android-unit-wide--instrumented-bowl--manual-cap) 的對應內容，並交由 `android-test-funnel` 逐 feature 落地。
+
 ## 目標形狀：Pyramid-leaning Trophy
 
 ```
@@ -19,7 +22,7 @@
 - **Integration** ≈ 30%（仍是雙頂之一，BaaS 的必要）
 - **E2E** ≤ 5%（薄頂，只蓋 critical journey）
 
-完整論證見 [`test-strategy` skill](https://github.com/AndyLai13/andy-marketplace/tree/main/toolbox/skills/test-strategy#why-not-pure-pyramid-702010)。
+完整論證見 [`test-strategy` skill](https://github.com/AndyLai13/andy-marketplace/tree/main/toolbox/skills/test-strategy#why-not-pure-pyramid-baas)。
 
 ## Tier 角色定義
 

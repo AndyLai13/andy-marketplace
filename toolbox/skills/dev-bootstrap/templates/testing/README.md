@@ -6,6 +6,8 @@
 
 形狀與 tier 角色的 doctrine 在 [`test-strategy`](https://github.com/AndyLai13/andy-marketplace/tree/main/toolbox/skills/test-strategy) skill。本目錄的 [shape.md](./shape.md) 是本專案的具體 instantiation（命名與比例填入專案數字），其餘檔案是工具化的延伸。
 
+> `test-strategy` 有兩個 shape 實例：**Shape A — BaaS / serverless**（本模板預設）與 **Shape B — Android `:app`**。本目錄整套樣板（patterns / multi-tenant-safety / ci）是 BaaS instantiation；Android 專案請改用 Shape B，並交由 `android-test-funnel` 逐 feature 落地。
+
 ## 一句話形狀
 
 目標 **Pyramid-leaning Trophy（65/30/5）**。當前實測在 [status.md](./status.md)。
