@@ -75,7 +75,7 @@ docs/
 │   │   ├── overview.md  產品高層總覽
 │   │   └── *.md         功能級 spec（feature ship 後加）
 │   └── testing/         測試 doctrine + pattern + 當前快照（若 bootstrap 時啟用）
-│       ├── README.md    索引（連結 testing-pyramid-doctrine skill）
+│       ├── README.md    索引（連結 test-strategy skill）
 │       ├── shape.md     tier 比例目標 + 不投資清單
 │       ├── patterns.md  Mock / RPC race / module 抽取樣板
 │       ├── coverage.md  v8 跨 process 限制 + 門檻

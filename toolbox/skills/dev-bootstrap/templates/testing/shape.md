@@ -1,7 +1,7 @@
 # Test Shape & Strategy
 
 > Canonical spec：本專案的 tier 比例目標、角色定義、不投資清單。
-> Doctrine 出處：[`testing-pyramid-doctrine`](https://github.com/AndyLai13/andy-marketplace/tree/main/toolbox/skills/testing-pyramid-doctrine) skill。
+> Doctrine 出處：[`test-strategy`](https://github.com/AndyLai13/andy-marketplace/tree/main/toolbox/skills/test-strategy) skill。
 > 當前實測數字在 [status.md](./status.md)。
 
 ## 目標形狀：Pyramid-leaning Trophy
@@ -19,7 +19,7 @@
 - **Integration** ≈ 30%（仍是雙頂之一，BaaS 的必要）
 - **E2E** ≤ 5%（薄頂，只蓋 critical journey）
 
-完整論證見 [`testing-pyramid-doctrine` skill](https://github.com/AndyLai13/andy-marketplace/tree/main/toolbox/skills/testing-pyramid-doctrine#why-not-pure-pyramid-702010)。
+完整論證見 [`test-strategy` skill](https://github.com/AndyLai13/andy-marketplace/tree/main/toolbox/skills/test-strategy#why-not-pure-pyramid-702010)。
 
 ## Tier 角色定義
 

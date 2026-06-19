@@ -1,6 +1,6 @@
 ---
 name: dev-bootstrap
-description: Use when a new project is ready to adopt the brainstorm-draft → implementation-plan → canonical-spec doc lifecycle — typically after a brainstorm has settled on a project name, one-liner, and rough scope, and `docs/product/spec/` does not yet exist. Two entry points — (a) explicit: user runs `/toolbox:dev-bootstrap`; (b) proactive: when those readiness signals appear in a greenfield repo, OFFER to run it (ask first — this skill creates files and commits, never auto-execute). Sets up docs/product/spec/, docs/superpowers/{drafts,plans,runbooks}/, root README.md, CLAUDE.md, glossary stub, and optionally docs/product/testing/ (Pyramid-leaning Trophy structure that references the testing-pyramid-doctrine skill). Greenfield only — aborts if docs/product/spec/ already exists.
+description: Use when a new project is ready to adopt the brainstorm-draft → implementation-plan → canonical-spec doc lifecycle — typically after a brainstorm has settled on a project name, one-liner, and rough scope, and `docs/product/spec/` does not yet exist. Two entry points — (a) explicit: user runs `/toolbox:dev-bootstrap`; (b) proactive: when those readiness signals appear in a greenfield repo, OFFER to run it (ask first — this skill creates files and commits, never auto-execute). Sets up docs/product/spec/, docs/superpowers/{drafts,plans,runbooks}/, root README.md, CLAUDE.md, glossary stub, and optionally docs/product/testing/ (Pyramid-leaning Trophy structure that references the test-strategy skill). Greenfield only — aborts if docs/product/spec/ already exists.
 ---
 
 # dev-bootstrap
@@ -59,7 +59,7 @@ Ask all five questions in one call:
 2. **One-line description** — used under H1 (free text)
 3. **Git workflow** — `solo` (direct merge to main, no PR) or `team` (PR + review)
 4. **Research subdirs** (multi-select) — `business-model`, `competitors`, `interviews`, `market-research`. Create empty dir + `.gitkeep` for each chosen.
-5. **Testing docs structure** — `yes` (scaffold `docs/product/testing/` with 7 templates + SVG referencing the `testing-pyramid-doctrine` skill) or `no` (skip; user can add later). Default recommendation: **yes** for any project that will have automated tests.
+5. **Testing docs structure** — `yes` (scaffold `docs/product/testing/` with 7 templates + SVG referencing the `test-strategy` skill) or `no` (skip; user can add later). Default recommendation: **yes** for any project that will have automated tests.
 
 The workflow answer picks which `WORKFLOW_BLOCK` to inject. The research answer decides which empty dirs to create. The testing answer decides whether step 7 runs.
 
@@ -158,7 +158,7 @@ Otherwise, render the 8 testing templates with placeholder substitution (`{{PROJ
 | `templates/testing/status.md` | `./docs/product/testing/status.md` |
 | `templates/testing/test-pyramid-shapes.svg` | `./docs/product/testing/test-pyramid-shapes.svg` |
 
-All 8 files include cross-links to each other + an outbound link to the `testing-pyramid-doctrine` skill as the conceptual source. The doctrine itself is NOT duplicated into the project — `shape.md` is the project-specific instantiation.
+All 8 files include cross-links to each other + an outbound link to the `test-strategy` skill as the conceptual source. The doctrine itself is NOT duplicated into the project — `shape.md` is the project-specific instantiation.
 
 If the project is not multi-tenant, the user can delete `multi-tenant-safety.md` after the bootstrap.
 
@@ -208,7 +208,7 @@ Print a short next-steps message:
 | Skipping CLAUDE.md because "README has it all" | CLAUDE.md is auto-injected into Claude system prompt; it's the condensed contract for AI sessions. Keep both. |
 | Overwriting an existing README without checking | Step 4 has explicit collision handling. Check `## 開發協作規約` substring before deciding render vs append vs skip. |
 | Forcing a CLAUDE.md write when one exists | Step 5 explicitly skips. The user's existing CLAUDE.md may encode project-specific instructions you'd destroy. Warn instead. |
-| Copying the `testing-pyramid-doctrine` content into `shape.md` | Don't. `shape.md` just *references* the skill via URL. Duplicating the doctrine creates a drift surface. |
+| Copying the `test-strategy` content into `shape.md` | Don't. `shape.md` just *references* the skill via URL. Duplicating the doctrine creates a drift surface. |
 | Running step 7 when `docs/product/testing/` already exists | Skip with warning — same rule as README/CLAUDE collision. Never overwrite an existing testing-doc tree. |
 
 ## Why this design

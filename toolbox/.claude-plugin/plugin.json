@@ -1,6 +1,6 @@
 {
   "name": "toolbox",
-  "description": "Andy Lai 的個人工具箱：Android :app 測試慣例 (android-testing)、AC → Given-When-Then 改寫 (gwt)、AC → 測試漏斗 unit/instrumented/manual 三層分流 + 寫測試碼 (test-funnel)、multi-PR 縱切 + 雙循環 TDD 規劃 (dual-loop-flow)、feature branch 收尾清理 (cleanup-merged-branch)、開 PR 前收斂 pipeline (start-task)、Figma↔Android UI 像素對齊迴圈 (roborazzi-figma，Compose + View/XML)、greenfield 專案文件 lifecycle 鷹架 (dev-bootstrap，含 docs/product/testing/ 結構)、BaaS 測試金字塔策略原則 (testing-pyramid-doctrine)。",
-  "version": "0.7.2",
+  "description": "Andy Lai 的個人工具箱：Android :app 測試慣例 (android-testing)、AC → Given-When-Then 改寫 (gwt)、AC → 測試漏斗 unit/instrumented/manual 三層分流 + 寫測試碼 (test-funnel)、multi-PR 縱切 + 雙循環 TDD 規劃 (dual-loop-flow)、feature branch 收尾清理 (cleanup-merged-branch)、開 PR 前收斂 pipeline (start-task)、Figma↔Android UI 像素對齊迴圈 (roborazzi-figma，Compose + View/XML)、greenfield 專案文件 lifecycle 鷹架 (dev-bootstrap，含 docs/product/testing/ 結構)、BaaS 測試金字塔策略原則 (test-strategy)。",
+  "version": "0.7.3",
   "author": { "name": "AndyLai13", "email": "badboyandy13@gmail.com" }
 }

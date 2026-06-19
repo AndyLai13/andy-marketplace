@@ -1,5 +1,5 @@
 ---
-name: testing-pyramid-doctrine
+name: test-strategy
 description: Use when designing or evaluating a project's test-tier strategy on a BaaS / serverless stack (Cloudflare Workers + Supabase, Pages + Edge Functions, Vercel + Postgres RLS, similar). Defines the Pyramid-leaning Trophy 65/30/5 shape, Unit/Integration/E2E role boundaries, what NOT to invest in, and coverage-target philosophy. Pure doctrine — does not scaffold files (see dev-bootstrap for that).
 ---
 
@@ -159,4 +159,4 @@ The project's own `docs/product/testing/README.md` should cite this skill
 for the *why* and keep project-specific instantiation (RPCs named, vendor
 adapters used, viewport scope, etc.) in its own `shape.md`. Example link:
 
-> 概念來源：`testing-pyramid-doctrine` skill (andy-marketplace/toolbox)
+> 概念來源：`test-strategy` skill (andy-marketplace/toolbox)

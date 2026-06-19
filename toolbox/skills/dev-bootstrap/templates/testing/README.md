@@ -4,7 +4,7 @@
 
 ## 概念來源
 
-形狀與 tier 角色的 doctrine 在 [`testing-pyramid-doctrine`](https://github.com/AndyLai13/andy-marketplace/tree/main/toolbox/skills/testing-pyramid-doctrine) skill。本目錄的 [shape.md](./shape.md) 是本專案的具體 instantiation（命名與比例填入專案數字），其餘檔案是工具化的延伸。
+形狀與 tier 角色的 doctrine 在 [`test-strategy`](https://github.com/AndyLai13/andy-marketplace/tree/main/toolbox/skills/test-strategy) skill。本目錄的 [shape.md](./shape.md) 是本專案的具體 instantiation（命名與比例填入專案數字），其餘檔案是工具化的延伸。
 
 ## 一句話形狀
 
