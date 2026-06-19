@@ -1,5 +1,5 @@
 /*
- * Instrumented 真機 e2e harness — 由 /toolbox:test-funnel 提供，供 layer (b) 自動化「原本手動」的驗證。
+ * Instrumented 真機 e2e harness — 由 /toolbox:android-test-funnel 提供，供 layer (b) 自動化「原本手動」的驗證。
  * 萃取自 canonical 範例 edu-vbos-finch
  *   app/src/androidTest/.../zoom/ZoomActivityInstrumentedTest.kt（VB-579 / VB-882，IFP41 全綠）。
  *

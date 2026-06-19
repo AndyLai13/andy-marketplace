@@ -1,10 +1,10 @@
 ---
-name: test-funnel
-description: Use when turning a feature's AC / PRD into a test-case document and triaging each case into a unit test, an instrumented (real-device) test, or manual — for the edu-vbos-finch :app module. Triggers — a Jira key, pasted AC, "build test cases", "automate the manual tests", "backfill unit tests", "which tests do I need". Trigger: /toolbox:test-funnel
-trigger: /toolbox:test-funnel
+name: android-test-funnel
+description: Use when turning a feature's AC / PRD into a test-case document and triaging each case into a unit test, an instrumented (real-device) test, or manual — for the edu-vbos-finch :app module. Triggers — a Jira key, pasted AC, "build test cases", "automate the manual tests", "backfill unit tests", "which tests do I need". Trigger: /toolbox:android-test-funnel
+trigger: /toolbox:android-test-funnel
 ---
 
-# /test-funnel — AC → 測試漏斗（unit / instrumented / manual）
+# /android-test-funnel — AC → 測試漏斗（unit / instrumented / manual）
 
 把一個 feature 的 AC / PRD 變成一份 **TC 表格文件**，並對每個 sub-case 做三層分流，**真的把測試碼寫出來**：純邏輯沉到 unit、能自動化的手動驗證升成 instrumented、只剩純視覺/感知的留 manual。
 
@@ -34,10 +34,10 @@ trigger: /toolbox:test-funnel
 
 | 觸發 | 動作 |
 |------|------|
-| `/toolbox:test-funnel VB-1234` | 讀 ticket 的 AC / PRD（走 gwt 的 Step -1 Jira 抓法，見下） |
-| `/toolbox:test-funnel "<直接貼 AC>"` | 直接吃貼進來的 AC 草稿 |
-| `/toolbox:test-funnel <檔案路徑>` | 讀檔 → 解析內容是否為 AC：是當 AC 草稿、不是則回報非 AC 不硬解析（見 Step 1） |
-| `/toolbox:test-funnel`（無參數） | 問使用者要 Jira key、貼 AC 還是給檔案 |
+| `/toolbox:android-test-funnel VB-1234` | 讀 ticket 的 AC / PRD（走 gwt 的 Step -1 Jira 抓法，見下） |
+| `/toolbox:android-test-funnel "<直接貼 AC>"` | 直接吃貼進來的 AC 草稿 |
+| `/toolbox:android-test-funnel <檔案路徑>` | 讀檔 → 解析內容是否為 AC：是當 AC 草稿、不是則回報非 AC 不硬解析（見 Step 1） |
+| `/toolbox:android-test-funnel`（無參數） | 問使用者要 Jira key、貼 AC 還是給檔案 |
 | 既有 `test_case/<key>.md` 含 `👁 Manual` / `⏸ Deferred`，要重新挑戰 | 走**反向模式**（見下）：spike 驗前提 → 能翻就升 instrumented |
 
 ---

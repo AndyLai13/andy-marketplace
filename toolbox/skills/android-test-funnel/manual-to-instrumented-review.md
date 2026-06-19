@@ -1,6 +1,6 @@
-# 手動測項 → instrumented 升級 review 準則（test-funnel 反向模式）
+# 手動測項 → instrumented 升級 review 準則（android-test-funnel 反向模式）
 
-> test-funnel 的**反向 / audit 方向**：不是從 AC 往下分流，而是拿一份**已存在**、結論寫了
+> android-test-funnel 的**反向 / audit 方向**：不是從 AC 往下分流，而是拿一份**已存在**、結論寫了
 > `👁 Manual` / `⏸ Deferred` 的 test_case 文件，**挑戰那些結論**、能翻就升成 instrumented。
 > 方法論可泛化，實作 lore 對準 edu-vbos-finch（漏斗符號 ✅/△/⬜/👁/⏸ 見 `testcase-template.md`）。
 >

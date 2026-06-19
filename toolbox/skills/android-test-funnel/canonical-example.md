@@ -1,5 +1,5 @@
 <!--
-  乾淨 test-case 檔的 canonical 範例 — 由 /toolbox:test-funnel 參照（本地副本，不依賴外部 repo）。
+  乾淨 test-case 檔的 canonical 範例 — 由 /toolbox:android-test-funnel 參照（本地副本，不依賴外部 repo）。
   節錄自 edu-vbos-finch `test_case/timer.md`（VB-82 / 385 / 386）的真實列。
   完整維護規範、符號定義與 `_TEMPLATE` 的單一真實來源 = 產出 repo 的 `test_case/CONVENTIONS.md`；檔案骨架範本見同目錄 `testcase-template.md`。本檔不重複。
 

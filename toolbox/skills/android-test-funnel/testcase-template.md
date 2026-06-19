@@ -1,5 +1,5 @@
 <!--
-  Test Case 文件模板 — 由 /toolbox:test-funnel 產出。
+  Test Case 文件模板 — 由 /toolbox:android-test-funnel 產出。
   表頭規範（編號 / 維護紀律 / 測試漏斗 / 狀態符號 / _TEMPLATE）的單一真實來源 =
   產出 repo 的 test_case/CONVENTIONS.md，本檔不再內嵌、避免 drift。
   新增一份產品 test_case 檔時（骨架與規則見 CONVENTIONS.md〈每檔表頭該放什麼〉）：
