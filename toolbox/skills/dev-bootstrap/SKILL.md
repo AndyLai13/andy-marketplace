@@ -1,11 +1,25 @@
 ---
 name: dev-bootstrap
-description: Use when initializing a new project that should follow the brainstorm-draft → implementation-plan → canonical-spec doc lifecycle. Sets up docs/product/spec/, docs/superpowers/{drafts,plans,runbooks}/, root README.md, CLAUDE.md, glossary stub, and optionally docs/product/testing/ (Pyramid-leaning Trophy structure that references the testing-pyramid-doctrine skill). Greenfield only — aborts if docs/product/spec/ already exists.
+description: Use when a new project is ready to adopt the brainstorm-draft → implementation-plan → canonical-spec doc lifecycle — typically after a brainstorm has settled on a project name, one-liner, and rough scope, and `docs/product/spec/` does not yet exist. Two entry points — (a) explicit: user runs `/toolbox:dev-bootstrap`; (b) proactive: when those readiness signals appear in a greenfield repo, OFFER to run it (ask first — this skill creates files and commits, never auto-execute). Sets up docs/product/spec/, docs/superpowers/{drafts,plans,runbooks}/, root README.md, CLAUDE.md, glossary stub, and optionally docs/product/testing/ (Pyramid-leaning Trophy structure that references the testing-pyramid-doctrine skill). Greenfield only — aborts if docs/product/spec/ already exists.
 ---
 
 # dev-bootstrap
 
 One-shot scaffold for a project that adopts the **draft → plan → ship → spec** doc lifecycle. Designed for solo or small-team dev where `docs/product/spec/` is the single source of truth and `docs/superpowers/{drafts,plans}/` are ephemeral working files that get distilled into specs at task-complete time.
+
+## How this skill activates
+
+Two entry points:
+
+1. **Explicit** — user runs `/toolbox:dev-bootstrap`. Deterministic, safe path. Jump straight to the execution flow.
+2. **Proactive (readiness detection)** — during a conversation, propose running this skill when **all three** signals hold:
+   - The discussion is brainstorming a **new project** and has settled on at least a project name, a one-liner, and rough scope.
+   - cwd is a git repo (or the user is fine with `git init`).
+   - `docs/product/spec/` does **not** exist (greenfield).
+
+   When the signals hold, **offer** — e.g. "Looks like this project is ready to scaffold its doc lifecycle. Want me to run dev-bootstrap?" — and wait for a yes.
+
+**Never auto-execute on detection.** This skill creates files and writes a commit; mid-brainstorm surprise scaffolding is a bad outcome and early readiness is easy to misjudge. Detection ⇒ propose; only an explicit yes (or the slash command) ⇒ run.
 
 ## When to use
 
