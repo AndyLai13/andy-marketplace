@@ -69,10 +69,20 @@ Plan 最後一個 task 跑完、tests 過、給 user 視覺驗證項目後 → *
 
 ```
 docs/
-├── product/spec/        canonical 設計事實（單一 source of truth）
-│   ├── README.md        spec 索引 + lifecycle 規約 + 變更歷史
-│   ├── overview.md      產品高層總覽
-│   └── *.md             功能級 spec（feature ship 後加）
+├── product/
+│   ├── spec/            canonical 設計事實（單一 source of truth）
+│   │   ├── README.md    spec 索引 + lifecycle 規約 + 變更歷史
+│   │   ├── overview.md  產品高層總覽
+│   │   └── *.md         功能級 spec（feature ship 後加）
+│   └── testing/         測試 doctrine + pattern + 當前快照（若 bootstrap 時啟用）
+│       ├── README.md    索引（連結 testing-pyramid-doctrine skill）
+│       ├── shape.md     tier 比例目標 + 不投資清單
+│       ├── patterns.md  Mock / RPC race / module 抽取樣板
+│       ├── coverage.md  v8 跨 process 限制 + 門檻
+│       ├── ci.md        CI 政策 + fileParallelism 警示
+│       ├── multi-tenant-safety.md  RLS cross-leak（critical）
+│       ├── status.md    當前 snapshot（覆蓋更新）
+│       └── test-pyramid-shapes.svg 視覺化
 ├── superpowers/
 │   ├── drafts/          brainstorm 階段（feature ship 後刪）
 │   ├── plans/           實作 plan + QA log（feature ship 後刪）

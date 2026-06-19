@@ -1,6 +1,6 @@
 ---
 name: dev-bootstrap
-description: Use when initializing a new project that should follow the brainstorm-draft → implementation-plan → canonical-spec doc lifecycle. Sets up docs/product/spec/, docs/superpowers/{drafts,plans,runbooks}/, root README.md, CLAUDE.md, glossary stub. Greenfield only — aborts if docs/product/spec/ already exists.
+description: Use when initializing a new project that should follow the brainstorm-draft → implementation-plan → canonical-spec doc lifecycle. Sets up docs/product/spec/, docs/superpowers/{drafts,plans,runbooks}/, root README.md, CLAUDE.md, glossary stub, and optionally docs/product/testing/ (Pyramid-leaning Trophy structure that references the testing-pyramid-doctrine skill). Greenfield only — aborts if docs/product/spec/ already exists.
 ---
 
 # dev-bootstrap
@@ -39,14 +39,15 @@ If the cwd is not a git repo, ask the user whether to `git init` before continui
 
 ### 2. Gather inputs (use AskUserQuestion)
 
-Ask all four questions in one call:
+Ask all five questions in one call:
 
 1. **Project name** — used in README H1 and CLAUDE.md (free text; suggest the cwd folder name)
 2. **One-line description** — used under H1 (free text)
 3. **Git workflow** — `solo` (direct merge to main, no PR) or `team` (PR + review)
 4. **Research subdirs** (multi-select) — `business-model`, `competitors`, `interviews`, `market-research`. Create empty dir + `.gitkeep` for each chosen.
+5. **Testing docs structure** — `yes` (scaffold `docs/product/testing/` with 7 templates + SVG referencing the `testing-pyramid-doctrine` skill) or `no` (skip; user can add later). Default recommendation: **yes** for any project that will have automated tests.
 
-The workflow answer picks which `WORKFLOW_BLOCK` to inject. The research answer decides which empty dirs to create.
+The workflow answer picks which `WORKFLOW_BLOCK` to inject. The research answer decides which empty dirs to create. The testing answer decides whether step 7 runs.
 
 ### 3. Create directory skeleton
 
@@ -126,20 +127,43 @@ Based on Q3:
 
 The rendered output should contain exactly one workflow block and no `KEEP-IF` marker comments. For `README-append.md`, also remove the top HTML comment block (the one explaining what the file is).
 
-### 7. Verify
+### 7. Testing docs scaffold (only if Q5 = yes)
+
+If `docs/product/testing/` already exists → **skip with warning**: "testing docs already exist — leaving them alone."
+
+Otherwise, render the 8 testing templates with placeholder substitution (`{{PROJECT_NAME}}`, `{{TODAY}}`):
+
+| Template | Output path |
+|---|---|
+| `templates/testing/README.md` | `./docs/product/testing/README.md` |
+| `templates/testing/shape.md` | `./docs/product/testing/shape.md` |
+| `templates/testing/patterns.md` | `./docs/product/testing/patterns.md` |
+| `templates/testing/coverage.md` | `./docs/product/testing/coverage.md` |
+| `templates/testing/ci.md` | `./docs/product/testing/ci.md` |
+| `templates/testing/multi-tenant-safety.md` | `./docs/product/testing/multi-tenant-safety.md` |
+| `templates/testing/status.md` | `./docs/product/testing/status.md` |
+| `templates/testing/test-pyramid-shapes.svg` | `./docs/product/testing/test-pyramid-shapes.svg` |
+
+All 8 files include cross-links to each other + an outbound link to the `testing-pyramid-doctrine` skill as the conceptual source. The doctrine itself is NOT duplicated into the project — `shape.md` is the project-specific instantiation.
+
+If the project is not multi-tenant, the user can delete `multi-tenant-safety.md` after the bootstrap.
+
+### 8. Verify
 
 Before committing, run:
 
 ```bash
 test -f README.md && test -f docs/product/spec/README.md
 ls docs/superpowers/{drafts,plans,runbooks}/ docs/reference/
+# if Q5 = yes:
+test -f docs/product/testing/README.md && test -f docs/product/testing/shape.md
 ```
 
 `CLAUDE.md` is allowed to be absent if step 5 hit the "exists, skipped" branch.
 
 If a required check fails, surface the error and stop. Do not commit a half-bootstrapped tree.
 
-### 8. Commit
+### 9. Commit
 
 ```bash
 git add README.md docs/
@@ -149,13 +173,14 @@ git commit -m "chore: bootstrap doc lifecycle structure"
 
 Do not push. The user pushes when they're ready.
 
-### 9. Hand-off message
+### 10. Hand-off message
 
 Print a short next-steps message:
 
 - First brainstorm session → `docs/superpowers/drafts/{TODAY}-{topic}.md`
 - When ready to implement → `docs/superpowers/plans/{TODAY}-{topic}-implementation.md`
 - After ship → user says "本任務完成" / "task complete" → execute lifecycle protocol from `README.md`
+- (if Q5=yes) First testing pass → fill in `docs/product/testing/shape.md` with project-specific RPC / RLS / vendor names; run first test, update `docs/product/testing/status.md` via the refresh script in its footer
 
 ## Common mistakes
 
@@ -169,6 +194,8 @@ Print a short next-steps message:
 | Skipping CLAUDE.md because "README has it all" | CLAUDE.md is auto-injected into Claude system prompt; it's the condensed contract for AI sessions. Keep both. |
 | Overwriting an existing README without checking | Step 4 has explicit collision handling. Check `## 開發協作規約` substring before deciding render vs append vs skip. |
 | Forcing a CLAUDE.md write when one exists | Step 5 explicitly skips. The user's existing CLAUDE.md may encode project-specific instructions you'd destroy. Warn instead. |
+| Copying the `testing-pyramid-doctrine` content into `shape.md` | Don't. `shape.md` just *references* the skill via URL. Duplicating the doctrine creates a drift surface. |
+| Running step 7 when `docs/product/testing/` already exists | Skip with warning — same rule as README/CLAUDE collision. Never overwrite an existing testing-doc tree. |
 
 ## Why this design
 
