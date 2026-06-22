@@ -8,7 +8,7 @@
     {
       "name": "toolbox",
       "source": "./toolbox",
-      "description": "Andy Lai 的個人工具箱（9 skill）：跨-stack 測試 doctrine (test-strategy，BaaS + Android 雙 shape)；Android 測試鏈 (android-testing / android-test-funnel / roborazzi-figma)；AC 工具 (gwt)；流程編排 (dual-loop-flow / start-task)；專案/branch 收尾 (dev-bootstrap / cleanup-merged-branch)。"
+      "description": "Andy Lai 的個人工具箱（10 skill）：跨-stack 測試 doctrine (test-strategy，BaaS + Android 雙 shape)；Android 測試鏈 (android-testing / android-test-funnel / roborazzi-figma)；AC 工具 (gwt)；流程編排 (dual-loop-flow / start-task)；專案/branch/文件 lifecycle 收尾 (dev-bootstrap / cleanup-merged-branch / finalize-doc-lifecycle)。"
     }
   ]
 }
