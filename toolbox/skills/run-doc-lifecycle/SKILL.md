@@ -1,9 +1,9 @@
 ---
-name: archive-plan
+name: run-doc-lifecycle
 description: Use when an implementation plan has finished shipping and the draft + plan files need to be absorbed into canonical specs and deleted — the draft → plan → ship → spec lifecycle's closing step. Triggers — user says "本任務完成" / "task complete" / "收尾 lifecycle" / "歸檔 plan" / "plan 跑完了把文件收掉"; drafts/plans in docs/superpowers/ accumulating un-absorbed after features ship. This is the executor counterpart to dev-bootstrap (which only scaffolds the lifecycle). Gated on user QA confirmation — never auto-run.
 ---
 
-# archive-plan
+# run-doc-lifecycle
 
 Closes the **draft → plan → ship → spec** doc lifecycle for one shipped plan: map every design fact in the plan + its draft to the canonical specs, absorb what's missing, verify absorption is complete, then delete the plan + draft. The destructive step (deleting working files) comes **last** and only after verification — git history is the only recovery path, so a fact lost from canonical before deletion is a real loss.
 
