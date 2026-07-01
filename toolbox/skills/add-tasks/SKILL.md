@@ -1,6 +1,6 @@
 ---
 name: add-tasks
-description: Use when the user invokes `/add-tasks <items>` to batch-queue tasks into the session task list. `<items>` may be multiline (one per line), comma-separated, or a numbered/`#`-prefixed list. Appends to the existing sequence (never clears it), dedups against tasks already present, and stamps each new task with a running `#N` number. Not for single-task tracking mid-work (call TaskCreate directly), not for editing/completing existing tasks (use TaskUpdate).
+description: Use when the user invokes `/add-tasks <items>` to batch-queue tasks into the session task list, OR when a document is pointed at as a source of tasks (arg is a file path, or the conversation says a file/doc "has tasks / TODOs / open items to track"). `<items>` may be multiline (one per line), comma-separated, a numbered/`#`-prefixed list, or a file/document path whose actionable items get extracted. Appends to the existing sequence (never clears it), dedups against tasks already present, and stamps each new task with a running `#N` number. Not for single-task tracking mid-work (call TaskCreate directly), not for editing/completing existing tasks (use TaskUpdate).
 ---
 
 # add-tasks — batch-queue tasks with #N numbering
@@ -11,6 +11,8 @@ Turn a batch of items into task-list entries in one shot. **Appends** to whateve
 
 ✅ User invokes `/add-tasks <items>` — a batch of things to track
 ✅ `<items>` is multiline, comma-separated, or numbered / `#`-prefixed
+✅ `<items>` is a **file/document path** — read it and extract its actionable items
+✅ The conversation points at a document as *having tasks* (e.g. "the open questions in that draft", "this doc's TODOs — queue them")
 ✅ You want them appended to the existing queue, not a fresh list
 
 ## When NOT to use
@@ -31,7 +33,29 @@ Call `TaskList` first. Record:
 
 Never assume the list is empty — new tasks always join the existing sequence.
 
-### 2. Parse `<items>` into discrete units
+### 2. Parse the input into discrete units
+
+**First decide the input mode:**
+
+- **Document mode** — the argument is a file path (contains a `/`, ends in `.md`/`.txt`/similar, or resolves to a file on disk), OR the conversation points at a specific document as the task source. → go to step 2a.
+- **Literal mode** — the argument is the items themselves. → go to step 2b.
+
+If the input mixes both (e.g. "add these two plus whatever's in `draft.md`"), do both and merge before dedup.
+
+#### 2a. Document mode — extract tasks from the file
+
+`Read` the referenced document, then pull out **only actionable work items**:
+
+- checklist entries — `- [ ]` (skip `- [x]`, already done)
+- explicit task headings — `Task N:`, `TODO:`, `待辦`, `要做的`, `action items`
+- "open questions" / "待拍板" items **only when phrased as work to do** (decide X, confirm Y); skip pure background prose
+- numbered work lists under a "next steps" / "剩下" / "尚未" heading
+
+**Do NOT pull in:** "out of scope / 不做" sections, "done / 已交付" items, background/context prose, or design rationale. When unsure whether a line is a task, include it and flag it in the report so the user can prune.
+
+Each extracted item becomes one unit. Note the source doc so the report and description can cite it.
+
+#### 2b. Literal mode — split the argument
 
 Split on whichever delimiter is present:
 - **newlines** → one item per non-blank line
@@ -52,7 +76,7 @@ When unsure whether two are "the same task", prefer treating them as the same (s
 
 Continue numbering from the max found in step 1. For each new item, in input order, call `TaskCreate`:
 - **subject**: `#N <concise imperative title>` — increment `N` for each new task. Keep the title short; move detail to the description.
-- **description**: the full item text expanded into a clear sentence of what needs doing.
+- **description**: the full item text expanded into a clear sentence of what needs doing. In document mode, cite the source (e.g. `來源：docs/…/foo-draft.md §7`) so the task is traceable back to the doc.
 - **activeForm**: the present-continuous form (e.g. subject `#3 修 schedule :30 漏畫` → `修 schedule :30 漏畫中`).
 
 One `TaskCreate` call per new item. Numbers are contiguous and never reused, even across separate `/add-tasks` invocations.
