@@ -1,6 +1,6 @@
 {
   "name": "toolbox",
-  "description": "Andy Lai 的個人工具箱：Android :app 測試慣例 (android-testing)、AC → Given-When-Then 改寫 (gwt)、AC → 測試漏斗 unit/instrumented/manual 三層分流 + 寫測試碼 (android-test-funnel)、multi-PR 縱切 + 雙循環 TDD 規劃 (dual-loop-flow)、feature branch 收尾清理 (cleanup-merged-branch)、開 PR 前收斂 pipeline (start-task)、Figma↔Android UI 像素對齊迴圈 (roborazzi-figma，Compose + View/XML)、greenfield 專案文件 lifecycle 鷹架 (dev-bootstrap，含 docs/product/testing/ 結構)、shipped plan 吸收進 canonical spec + 刪 draft/plan 的 lifecycle 收尾執行 (run-doc-lifecycle，dev-bootstrap 的 executor 對應)、跨-stack 測試分層策略原則 (test-strategy，BaaS + Android 雙 shape 實例)、批次把待辦丟進 session task list + #N 編號 + append 去重 (add-tasks)。",
-  "version": "0.9.0",
+  "description": "Andy Lai 的個人工具箱：Android :app 測試慣例 (android-testing)、AC → Given-When-Then 改寫 (gwt)、AC → 測試漏斗 unit/instrumented/manual 三層分流 + 寫測試碼 (android-test-funnel)、multi-PR 縱切 + 雙循環 TDD 規劃 (dual-loop-flow)、feature branch 收尾清理 (cleanup-merged-branch)、開 PR 前收斂 pipeline (start-task)、Figma↔Android UI 像素對齊迴圈 (roborazzi-figma，Compose + View/XML)、greenfield 專案文件 lifecycle 鷹架 (dev-bootstrap，含 docs/product/testing/ 結構)、shipped plan 吸收進 canonical spec + 刪 draft/plan 的 lifecycle 收尾執行 (run-doc-lifecycle，dev-bootstrap 的 executor 對應)、跨-stack 測試分層策略原則 (test-strategy，BaaS + Android 雙 shape 實例)、批次把待辦丟進 session task list + #N 編號 + append 去重 (add-tasks)、移除 task：完成直接刪／未完成確認後刪 (remove-task)。",
+  "version": "0.10.0",
   "author": { "name": "AndyLai13", "email": "badboyandy13@gmail.com" }
 }
