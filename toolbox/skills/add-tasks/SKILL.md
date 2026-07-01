@@ -1,6 +1,6 @@
 ---
 name: add-tasks
-description: Use when the user invokes `/add-tasks <items>` to batch-queue tasks into the session task list, OR when a document is pointed at as a source of tasks (arg is a file path, or the conversation says a file/doc "has tasks / TODOs / open items to track"). `<items>` may be multiline (one per line), comma-separated, a numbered/`#`-prefixed list, or a file/document path whose actionable items get extracted. Appends to the existing sequence (never clears it), dedups against tasks already present, and stamps each new task with a running `#N` number. Not for single-task tracking mid-work (call TaskCreate directly), not for editing/completing existing tasks (use TaskUpdate).
+description: Use when the user invokes `/add-tasks <items>` to batch-queue tasks into the session task list, OR when a document is pointed at as a source of tasks (arg is a file path, or the conversation says a file/doc "has tasks / TODOs / open items to track"). `<items>` may be multiline (one per line), comma-separated, a numbered/`#`-prefixed list, or a file/document path whose actionable items get extracted. Appends to the existing sequence (never clears it), dedups against tasks already present, and stamps each new task with a `#N` number — reusing the source's own numbering when the list is still empty, otherwise continuing the running sequence. Not for single-task tracking mid-work (call TaskCreate directly), not for editing/completing existing tasks (use TaskUpdate).
 ---
 
 # add-tasks — batch-queue tasks with #N numbering
@@ -29,7 +29,8 @@ Create a todo per step and work them in order.
 
 Call `TaskList` first. Record:
 - every existing task **subject** (for dedup)
-- the **highest `#N`** already in use across subjects (numbers may sit anywhere in the subject, e.g. `#7 修 schedule bug`). If no task carries a `#N`, the next number is `#1`.
+- the **highest `#N`** already in use across subjects (numbers may sit anywhere in the subject, e.g. `#7 修 schedule bug`)
+- whether **any** existing task carries a `#N` at all — this decides the numbering base in step 4
 
 Never assume the list is empty — new tasks always join the existing sequence.
 
@@ -72,14 +73,20 @@ For each parsed item, compare semantically against the existing subjects from st
 
 When unsure whether two are "the same task", prefer treating them as the same (skip) and note it in the report so the user can override.
 
-### 4. Create each new task with a running `#N`
+### 4. Create each new task with a `#N`
 
-Continue numbering from the max found in step 1. For each new item, in input order, call `TaskCreate`:
-- **subject**: `#N <concise imperative title>` — increment `N` for each new task. Keep the title short; move detail to the description.
+**First pick the numbering base:**
+
+- **Existing tasks already carry a `#N`** (list not empty, per step 1) → **continue from the max**. Ignore any numbers the source items carry; running numbers win so the session stays contiguous and never collides.
+- **No existing task carries a `#N`** (empty base) **and every parsed item carries an explicit source number** (`task 0` / `task 1`, `#0` / `#1`, `0.` / `1)` …) → **reuse the source numbers verbatim**. If the source starts at `0`, the first task is `#0`. This preserves the doc's own numbering.
+- **No existing `#N` and the source is unnumbered** (or only some items are numbered) → **start from `#1`** and run upward.
+
+For each new item, in input order, call `TaskCreate`:
+- **subject**: `#N <concise imperative title>` — `N` per the base above (source number, or the next running number). Keep the title short; move detail to the description.
 - **description**: the full item text expanded into a clear sentence of what needs doing. In document mode, cite the source (e.g. `來源：docs/…/foo-draft.md §7`) so the task is traceable back to the doc.
 - **activeForm**: the present-continuous form (e.g. subject `#3 修 schedule :30 漏畫` → `修 schedule :30 漏畫中`).
 
-One `TaskCreate` call per new item. Numbers are contiguous and never reused, even across separate `/add-tasks` invocations.
+One `TaskCreate` call per new item. When continuing a running sequence, numbers are contiguous and never reused, even across separate `/add-tasks` invocations. When reusing source numbers, a skipped duplicate simply leaves its source number uncreated (gaps are fine).
 
 ### 5. Report
 
@@ -92,5 +99,6 @@ Keep it tight — the task list itself is the record.
 ## Notes
 
 - `#N` is a human-facing label inside the subject string; it is independent of the task-list's own internal IDs.
-- Numbering is monotonic across the session: a second `/add-tasks` continues from where the first left off (skipped duplicates do not consume a number).
+- Numbering is monotonic across the session **once a running sequence exists**: a second `/add-tasks` continues from where the first left off (skipped duplicates do not consume a number).
+- Reusing source numbers only ever happens on the **first** batch into an empty list. After that, tasks carry `#N`, so every later `/add-tasks` continues the running sequence regardless of what numbers its source items carry.
 - Follow the session's response language for titles/descriptions (this user: 繁體中文 for prose, 原文 for code/identifiers).
