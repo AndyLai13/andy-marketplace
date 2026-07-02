@@ -1,11 +1,11 @@
 ---
 name: dev-bootstrap
-description: Use when a new project is ready to adopt the brainstorm-draft → implementation-plan → canonical-spec doc lifecycle — typically after a brainstorm has settled on a project name, one-liner, and rough scope, and `docs/product/spec/` does not yet exist. Two entry points — (a) explicit: user runs `/toolbox:dev-bootstrap`; (b) proactive: when those readiness signals appear in a greenfield repo, OFFER to run it (ask first — this skill creates files and commits, never auto-execute). Sets up docs/product/spec/, docs/superpowers/{drafts,plans,runbooks}/, root README.md, CLAUDE.md, glossary stub, and optionally docs/product/testing/ (Pyramid-leaning Trophy structure that references the test-strategy skill). Greenfield only — aborts if docs/product/spec/ already exists.
+description: Use when a new project is ready to adopt the backlog → spec → plan → canonical-docs doc lifecycle — typically after a brainstorm has settled on a project name, one-liner, and rough scope, and `docs/product/` does not yet exist. Two entry points — (a) explicit: user runs `/toolbox:dev-bootstrap`; (b) proactive: when those readiness signals appear in a greenfield repo, OFFER to run it (ask first — this skill creates files and commits, never auto-execute). Sets up docs/product/, docs/superpowers/{specs,plans,runbooks}/ + backlog.md, root README.md, CLAUDE.md, glossary stub, and optionally docs/product/testing/ (Pyramid-leaning Trophy structure that references the test-strategy skill). Greenfield only — aborts if docs/product/ already exists.
 ---
 
 # dev-bootstrap
 
-One-shot scaffold for a project that adopts the **draft → plan → ship → spec** doc lifecycle. Designed for solo or small-team dev where `docs/product/spec/` is the single source of truth and `docs/superpowers/{drafts,plans}/` are ephemeral working files that get distilled into specs at task-complete time.
+One-shot scaffold for a project that adopts the **backlog → spec 稿 → plan → ship → canonical docs** doc lifecycle. Designed for solo or small-team dev where `docs/product/` is the single source of truth (canonical docs, flat — no `spec/` subdir) and `docs/superpowers/{specs,plans}/` are ephemeral working files that get distilled into canonical docs at task-complete time. `docs/superpowers/backlog.md` holds pre-brainstorm rough ideas.
 
 ## How this skill activates
 
@@ -15,7 +15,7 @@ Two entry points:
 2. **Proactive (readiness detection)** — during a conversation, propose running this skill when **all three** signals hold:
    - The discussion is brainstorming a **new project** and has settled on at least a project name, a one-liner, and rough scope.
    - cwd is a git repo (or the user is fine with `git init`).
-   - `docs/product/spec/` does **not** exist (greenfield).
+   - `docs/product/` does **not** exist (greenfield).
 
    When the signals hold, **offer** — e.g. "Looks like this project is ready to scaffold its doc lifecycle. Want me to run dev-bootstrap?" — and wait for a yes.
 
@@ -29,7 +29,7 @@ Two entry points:
 
 ## When NOT to use
 
-❌ `docs/product/spec/` already exists — abort, do not overwrite (greenfield only)
+❌ `docs/product/` already exists — abort, do not overwrite (greenfield only)
 ❌ User only wants behavioural reminders for an existing project — point them at the existing `README.md` / `CLAUDE.md` instead
 ❌ User wants research-only docs (competitors / interviews) without lifecycle structure — just `mkdir` those folders manually
 
@@ -39,10 +39,10 @@ Follow these steps **in order**. Each step has a clear gate; do not advance unti
 
 ### 1. Greenfield gate
 
-The lifecycle structure is the source of truth, so the only hard gate is `docs/product/spec/`:
+The lifecycle structure is the source of truth, so the only hard gate is `docs/product/`:
 
 ```bash
-test -d docs/product/spec && echo "ABORT: docs/product/spec/ already exists"
+test -d docs/product && echo "ABORT: docs/product/ already exists"
 ```
 
 If exists → stop and tell the user. Do not offer merge mode.
@@ -68,8 +68,8 @@ The workflow answer picks which `WORKFLOW_BLOCK` to inject. The research answer 
 Always create:
 
 ```
-docs/product/spec/
-docs/superpowers/drafts/
+docs/product/
+docs/superpowers/specs/
 docs/superpowers/plans/
 docs/superpowers/runbooks/
 docs/reference/
@@ -77,9 +77,10 @@ docs/reference/
 
 Add `.gitkeep` to every directory that will not receive a real file in this run. After step 6:
 
-- `docs/product/spec/` gets `README.md` + `overview.md` → no .gitkeep needed
+- `docs/product/` gets `README.md` + `overview.md` → no .gitkeep needed
 - `docs/reference/` gets `glossary.md` → no .gitkeep needed
-- `docs/superpowers/drafts/`, `docs/superpowers/plans/`, `docs/superpowers/runbooks/` start empty → **add `.gitkeep`** to each (unless the dir already existed with content, in which case skip)
+- `docs/superpowers/backlog.md` is a real file rendered in step 6 → the `docs/superpowers/` dir itself needs no .gitkeep
+- `docs/superpowers/specs/`, `docs/superpowers/plans/`, `docs/superpowers/runbooks/` start empty → **add `.gitkeep`** to each (unless the dir already existed with content, in which case skip)
 
 For each chosen research subdir, create `docs/{subdir}/.gitkeep`.
 
@@ -100,14 +101,15 @@ For both render paths, apply the placeholder substitution and workflow-block sel
 | Condition | Action |
 |---|---|
 | `./CLAUDE.md` does **not** exist | Render `templates/CLAUDE.md` → `./CLAUDE.md` |
-| `./CLAUDE.md` exists | **Skip** and warn user: "CLAUDE.md already exists — leaving it alone. The lifecycle protocol is also in README.md and docs/product/spec/README.md; you may want to reconcile manually." |
+| `./CLAUDE.md` exists | **Skip** and warn user: "CLAUDE.md already exists — leaving it alone. The lifecycle protocol is also in README.md and docs/product/README.md; you may want to reconcile manually." |
 
 ### 6. Other files (always render — guarded by greenfield gate in step 1)
 
 | Template | Output path |
 |---|---|
-| `templates/spec-README.md` | `./docs/product/spec/README.md` |
-| `templates/spec-overview-stub.md` | `./docs/product/spec/overview.md` |
+| `templates/spec-README.md` | `./docs/product/README.md` |
+| `templates/spec-overview-stub.md` | `./docs/product/overview.md` |
+| `templates/backlog.md` | `./docs/superpowers/backlog.md` |
 | `templates/glossary.md` | `./docs/reference/glossary.md` |
 
 ### Placeholder substitution rules (for all render paths)
@@ -167,8 +169,9 @@ If the project is not multi-tenant, the user can delete `multi-tenant-safety.md`
 Before committing, run:
 
 ```bash
-test -f README.md && test -f docs/product/spec/README.md
-ls docs/superpowers/{drafts,plans,runbooks}/ docs/reference/
+test -f README.md && test -f docs/product/README.md
+test -f docs/superpowers/backlog.md
+ls docs/superpowers/{specs,plans,runbooks}/ docs/reference/
 # if Q5 = yes:
 test -f docs/product/testing/README.md && test -f docs/product/testing/shape.md
 ```
@@ -191,8 +194,9 @@ Do not push. The user pushes when they're ready.
 
 Print a short next-steps message:
 
-- First brainstorm session → `docs/superpowers/drafts/{TODAY}-{topic}.md`
-- When ready to implement → `docs/superpowers/plans/{TODAY}-{topic}-implementation.md`
+- First rough idea → `docs/superpowers/backlog.md` (one-liner; no design detail)
+- First brainstorm session → `docs/superpowers/specs/{TODAY}-{topic}-design.md`
+- When ready to implement → `docs/superpowers/plans/{TODAY}-{topic}.md`
 - After ship → user says "本任務完成" / "task complete" → execute lifecycle protocol from `README.md`
 - (if Q5=yes) First testing pass → fill in `docs/product/testing/shape.md` with project-specific RPC / RLS / vendor names; run first test, update `docs/product/testing/status.md` via the refresh script in its footer
 
@@ -200,9 +204,9 @@ Print a short next-steps message:
 
 | Mistake | Fix |
 |---|---|
-| Running the skill without checking greenfield first | The greenfield gate is non-negotiable. If `docs/product/spec/` exists, abort — even if the user insists. |
+| Running the skill without checking greenfield first | The greenfield gate is non-negotiable. If `docs/product/` exists, abort — even if the user insists. |
 | Picking both workflow blocks "to be safe" | Pick ONE based on Q3. README must be unambiguous. |
-| Pre-creating cross-cutting spec stubs (api/schema/auth/...) | Don't. Only `overview.md` stub. Other specs get created when the first feature lands. |
+| Pre-creating cross-cutting canonical stubs (api/schema/auth/...) | Don't. Only `overview.md` stub. Other canonical docs get created when the first feature lands. |
 | Pre-creating runbook templates | Don't. Runbooks are created when there's a real ops need. |
 | Pushing the commit | Don't. The user decides when to push. |
 | Skipping CLAUDE.md because "README has it all" | CLAUDE.md is auto-injected into Claude system prompt; it's the condensed contract for AI sessions. Keep both. |
@@ -213,6 +217,6 @@ Print a short next-steps message:
 
 ## Why this design
 
-Rules live in the **project's own files** (README.md, CLAUDE.md, docs/product/spec/README.md), not in this skill's body. The skill is just a scaffolder. Once it runs, the project is self-describing — any AI tool (Claude / Codex / Cursor / Gemini) reading the repo will pick up the lifecycle rules without needing this skill installed.
+Rules live in the **project's own files** (README.md, CLAUDE.md, docs/product/README.md), not in this skill's body. The skill is just a scaffolder. Once it runs, the project is self-describing — any AI tool (Claude / Codex / Cursor / Gemini) reading the repo will pick up the lifecycle rules without needing this skill installed.
 
 That's why this skill's templates carry the substantive content, and `SKILL.md` only carries execution flow.

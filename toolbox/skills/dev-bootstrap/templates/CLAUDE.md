@@ -14,9 +14,9 @@ Plan 最後一個 task 跑完、tests 過、給 user 視覺驗證項目後 → *
 
 **禁止**自動執行：
 - push 後續 lifecycle commit
-- 刪 `docs/superpowers/drafts/*` / `docs/superpowers/plans/*` 檔
-- 改 `docs/product/spec/README.md` 變更歷史
-- 寫 spec 各檔的新段落
+- 刪 `docs/superpowers/specs/*` / `docs/superpowers/plans/*` 檔
+- 改 `docs/product/README.md` 變更歷史
+- 寫 canonical docs 各檔的新段落
 
 只在 user 明確說觸發詞之後才執行下面三步。
 
@@ -31,13 +31,13 @@ Plan 最後一個 task 跑完、tests 過、給 user 視覺驗證項目後 → *
    - Abandoned：先跟 user 確認再刪
 
 3. **文件 lifecycle 收尾**
-   - 蒸餾 `docs/superpowers/drafts/{date}-{slug}.md` + `plans/{date}-{slug}.md` + `plans/{date}-qa-fixes-log.md`（若有）入 `docs/product/spec/{feature}.md`
-   - 更新 `docs/product/spec/README.md` 索引（若新檔）+ 變更歷史一行
-   - 刪 draft + plan + QA log
+   - 蒸餾 `docs/superpowers/specs/{date}-{slug}-design.md` + `plans/{date}-{slug}.md` + `plans/{date}-qa-fixes-log.md`（若有）入 `docs/product/{feature}.md`
+   - 更新 `docs/product/README.md` 索引（若新檔）+ 變更歷史一行
+   - 刪 spec 稿 + plan + QA log
 
 三步全 commit 後才回報 user。中途 conflict / push fail / 殘留檔才停下問。
 
-**不適用 lifecycle 收尾**：純 bug fix / 純文件清理 / 還在實驗階段（draft 留、不建 spec）。
+**不適用 lifecycle 收尾**：純 bug fix / 純文件清理 / 還在實驗階段（spec 稿留、不吸收進 canonical）。
 
 ## QA 修 bug workflow（手動 QA 撞 bug 時）
 
@@ -49,7 +49,7 @@ Plan 最後一個 task 跑完、tests 過、給 user 視覺驗證項目後 → *
 
 | 類型 | Pattern |
 |---|---|
-| brainstorm draft | `docs/superpowers/drafts/{YYYY-MM-DD}-{topic}.md` |
+| brainstorm 設計稿 (spec) | `docs/superpowers/specs/{YYYY-MM-DD}-{topic}-design.md` |
 | implementation plan | `docs/superpowers/plans/{YYYY-MM-DD}-{topic}-implementation.md` |
 | QA fix log | `docs/superpowers/plans/{YYYY-MM-DD}-qa-fixes-log.md` |
-| canonical feature spec | `docs/product/spec/{feature}.md` |
+| canonical feature doc | `docs/product/{feature}.md` |

@@ -45,10 +45,10 @@ AI assistant **不要**直接 push 到 main、**不要** self-merge PR。完成 
    - 沒 merge 但放棄的 branch：先跟 user 確認再刪
 
 3. **文件生命週期收尾**
-   - feature 對應的 `docs/superpowers/drafts/<date>-<slug>.md` 跟 `docs/superpowers/plans/<date>-<slug>.md` 蒸餾入 `docs/product/spec/<feature>.md`（canonical）
-   - 原 draft + plan + QA log 刪除
-   - 更新 `docs/product/spec/README.md` 索引 + 變更歷史一行
-   - 不適用情況:純 bug fix、純文件清理、依然在實驗階段 — 這時 draft 留著、不建 spec
+   - feature 對應的 `docs/superpowers/specs/<date>-<slug>-design.md` 跟 `docs/superpowers/plans/<date>-<slug>.md` 蒸餾入 `docs/product/<feature>.md`（canonical docs）
+   - 原 spec 稿 + plan + QA log 刪除
+   - 更新 `docs/product/README.md` 索引 + 變更歷史一行
+   - 不適用情況:純 bug fix、純文件清理、依然在實驗階段 — 這時 spec 稿留著、不吸收進 canonical
 
 三步全 commit 後再回報 user。中間若遇衝突（merge conflict、push 失敗、未追蹤檔殘留）才停下來問。
 
@@ -57,9 +57,9 @@ AI assistant **不要**直接 push 到 main、**不要** self-merge PR。完成 
 Plan 最後一個 task 跑完、tests 過、給 user 視覺驗證項目後 → **STOP**。**禁止**自動：
 
 - push 後續 lifecycle commit
-- 刪 `docs/superpowers/drafts/*` / `docs/superpowers/plans/*` 檔
-- 改 `docs/product/spec/README.md` 變更歷史
-- 寫 spec 各檔的新段落
+- 刪 `docs/superpowers/specs/*` / `docs/superpowers/plans/*` 檔
+- 改 `docs/product/README.md` 變更歷史
+- 寫 canonical docs 各檔的新段落
 
 只在 user 明確說觸發詞之後，才執行上面三步。
 
@@ -72,11 +72,10 @@ Plan 最後一個 task 跑完、tests 過、給 user 視覺驗證項目後 → *
 
 ```
 docs/
-├── product/
-│   ├── spec/            canonical 設計事實（單一 source of truth）
-│   │   ├── README.md    spec 索引 + lifecycle 規約 + 變更歷史
-│   │   ├── overview.md  產品高層總覽
-│   │   └── *.md         功能級 spec（feature ship 後加）
+├── product/             canonical 設計事實（單一 source of truth，扁平）
+│   ├── README.md        canonical docs 索引 + lifecycle 規約 + 變更歷史
+│   ├── overview.md      產品高層總覽
+│   ├── *.md             功能級 canonical doc（feature ship 後加）
 │   └── testing/         測試 doctrine + pattern + 當前快照（若 bootstrap 時啟用）
 │       ├── README.md    索引（連結 test-strategy skill）
 │       ├── shape.md     tier 比例目標 + 不投資清單
@@ -87,23 +86,24 @@ docs/
 │       ├── status.md    當前 snapshot（覆蓋更新）
 │       └── test-pyramid-shapes.svg 視覺化
 ├── superpowers/
-│   ├── drafts/          brainstorm 階段（feature ship 後刪）
+│   ├── backlog.md       粗略想法暫存區（一句話，刻意不寫細節）
+│   ├── specs/           brainstorm 設計稿（ship 後刪）
 │   ├── plans/           實作 plan + QA log（feature ship 後刪）
 │   └── runbooks/        運維/手動操作手冊（永久）
 └── reference/
     └── glossary.md      詞彙手冊
 ```
 
-文件 lifecycle：brainstorm draft → implementation plan → ship → 蒸餾入 `product/spec/<feature>.md`，draft + plan 隨之刪除。詳見 [`docs/product/spec/README.md`](docs/product/spec/README.md)。
+文件 lifecycle：backlog 想法 → brainstorm 設計稿(spec) → implementation plan → ship → 吸收進 `product/<feature>.md` (canonical docs)，spec 稿 + plan 隨之刪除。詳見 [`docs/product/README.md`](docs/product/README.md)。
 
 ### 檔名 convention
 
 | 類型 | Pattern |
 |---|---|
-| brainstorm draft | `docs/superpowers/drafts/{YYYY-MM-DD}-{topic}.md` |
+| brainstorm 設計稿 (spec) | `docs/superpowers/specs/{YYYY-MM-DD}-{topic}-design.md` |
 | implementation plan | `docs/superpowers/plans/{YYYY-MM-DD}-{topic}-implementation.md` |
 | QA fix log | `docs/superpowers/plans/{YYYY-MM-DD}-qa-fixes-log.md` |
-| canonical feature spec | `docs/product/spec/{feature}.md` |
+| canonical feature doc | `docs/product/{feature}.md` |
 
 ---
 
