@@ -1,6 +1,6 @@
 ---
 name: dev-bootstrap
-description: Use when a new project is ready to adopt the backlog → spec → plan → canonical-docs doc lifecycle — typically after a brainstorm has settled on a project name, one-liner, and rough scope, and `docs/product/` does not yet exist. Two entry points — (a) explicit: user runs `/toolbox:dev-bootstrap`; (b) proactive: when those readiness signals appear in a greenfield repo, OFFER to run it (ask first — this skill creates files and commits, never auto-execute). Sets up docs/product/, docs/superpowers/{specs,plans,runbooks}/ + backlog.md, root README.md, CLAUDE.md, glossary stub, and optionally docs/product/testing/ (Pyramid-leaning Trophy structure that references the test-strategy skill). Greenfield only — aborts if docs/product/ already exists.
+description: Use when a new project is ready to adopt the backlog → spec → plan → canonical-docs doc lifecycle — typically after a brainstorm has settled on a project name, one-liner, and rough scope, and `docs/product/` does not yet exist. Two entry points — (a) explicit: user runs `/toolbox:dev-bootstrap`; (b) proactive: when those readiness signals appear in a greenfield repo, OFFER to run it (ask first — this skill creates files and commits, never auto-execute). Sets up docs/product/, docs/superpowers/{specs,plans,runbooks}/ + backlog.md, root README.md, CLAUDE.md, glossary stub, and optionally docs/product/testing/ (Pyramid-leaning Trophy structure that references the test-strategy skill). If codebase-memory-mcp is connected in-session, also indexes the new repo into the code graph so structural queries work as code lands. Greenfield only — aborts if docs/product/ already exists.
 ---
 
 # dev-bootstrap
@@ -190,7 +190,17 @@ git commit -m "chore: bootstrap doc lifecycle structure"
 
 Do not push. The user pushes when they're ready.
 
-### 10. Hand-off message
+### 10. Index into code graph (conditional — skip silently if unavailable)
+
+If the **codebase-memory-mcp** MCP server is connected in this session (its `index_repository` / `list_projects` tools are available), register the new repo into the code graph so future structural queries (who-calls, blast-radius, architecture, cross-file symbol search) work as code lands:
+
+- Call the `index_repository` MCP **tool** with `{repo_path: "<absolute repo root>"}`. **Never shell out to a hardcoded binary path** — the tool is session-provided; the binary location is machine-specific and must not be baked into this skill.
+- A freshly-scaffolded repo may have little/no code yet — that's fine. The graph fills in on re-index (the server also watches files). The point here is to *register* the project so it shows up in `list_projects`.
+- Report one line: "Indexed into codebase-memory-mcp (project `<name>`, N nodes / M edges)."
+
+If the tool is **not** available (server not installed / not connected), **skip silently** — do not error, do not shell out, do not block the bootstrap. The repo can be indexed later on demand.
+
+### 11. Hand-off message
 
 Print a short next-steps message:
 
@@ -199,6 +209,7 @@ Print a short next-steps message:
 - When ready to implement → `docs/superpowers/plans/{TODAY}-{topic}.md`
 - After ship → user says "本任務完成" / "task complete" → execute lifecycle protocol from `README.md`
 - (if Q5=yes) First testing pass → fill in `docs/product/testing/shape.md` with project-specific RPC / RLS / vendor names; run first test, update `docs/product/testing/status.md` via the refresh script in its footer
+- (if step 10 indexed) Repo is now in codebase-memory-mcp — structural queries prefer the code graph; re-run `index_repository` after large refactors to refresh
 
 ## Common mistakes
 
@@ -214,6 +225,8 @@ Print a short next-steps message:
 | Forcing a CLAUDE.md write when one exists | Step 5 explicitly skips. The user's existing CLAUDE.md may encode project-specific instructions you'd destroy. Warn instead. |
 | Copying the `test-strategy` content into `shape.md` | Don't. `shape.md` just *references* the skill via URL. Duplicating the doctrine creates a drift surface. |
 | Running step 7 when `docs/product/testing/` already exists | Skip with warning — same rule as README/CLAUDE collision. Never overwrite an existing testing-doc tree. |
+| Hardcoding a codebase-memory-mcp binary path in step 10 | Use the session-provided `index_repository` MCP tool. Binary paths are machine-specific (often a build dir) and will rot. |
+| Letting step 10 block or error the bootstrap | Indexing is best-effort. If the MCP server isn't connected, skip silently — a missing code-graph must never fail a doc-lifecycle scaffold. |
 
 ## Why this design
 
